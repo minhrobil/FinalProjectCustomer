@@ -1,4 +1,4 @@
-# FinalProjectAdmin
+# FinalProjectCustomer
 
 > A material design reactjs admin template
 
