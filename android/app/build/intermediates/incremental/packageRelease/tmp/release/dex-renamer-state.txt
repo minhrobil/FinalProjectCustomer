@@ -1,0 +1,4 @@
+#Thu Nov 21 14:06:44 ICT 2019
+base.0=/Users/tima/Documents/QuangMinh/thoxaydung61/android/app/build/intermediates/transforms/dexMerger/release/0
+path.0=classes.dex
+renamed.0=classes.dex

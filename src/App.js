@@ -1,36 +1,55 @@
 /**
-* Main App
-*/
-import React from 'react';
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow
+ */
+
+import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import MomentUtils from '@date-io/moment';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { AppStack } from './AppStack';
+import codePush from 'react-native-code-push';
+import store from './redux-saga/Store';
 
-// css
-import './lib/reactifyCss';
-import 'antd/dist/antd.css';
-import '../public/master.css';
-import './assets/css/custom.css';
+class App extends React.Component {
+	render() {
+		return (
+			<Provider store={store}>
+				<AppStack />
+			</Provider>
+		);
+	}
+}
 
-// firebase
-import './firebase';
+App = codePush({
+	checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+	updateDialog: false,
+	installMode: codePush.InstallMode.IMMEDIATE
+})(App);
+export default App;
 
-// app component
-import App from './container/App';
+//iOS// appcenter codepush release-react -a truongminhphucsky95/Mecash-IOS -d Production
+//iOS// appcenter codepush release-react -a g-group/tima -d Staging
+//Android// appcenter codepush release-react -a truongminhphucsky95/Mecash-Android -d Production
+//Android// appcenter codepush release-react -a truongminhphucsky95/Mecash-Android -d Staging
 
-import { configureStore } from './store';
+//Android// appcenter codepush deployment list -a g-group/tima-1
+// ┌───────── ───┬──────────────────────────────────────────────────────────────────┐
+// │ Name       │ Deployment Key                                                   │
+// ├────────────┼──────────────────────────────────────────────────────────────────┤
+// │ Production │ KMO5vWQvAtOuIS53XOaHgaQJmHPV20d7fb24-e27f-4ed2-88e0-157ff447f8bd │
+// ├────────────┼──────────────────────────────────────────────────────────────────┤
+// │ Staging    │ CgHHy1uKvKOTYAt1Ur3PRHPq3SO520d7fb24-e27f-4ed2-88e0-157ff447f8bd │
+// └────────────┴──────────────────────────────────────────────────────────────────┘
 
-const MainApp = () => (
-	<Provider store={configureStore()}>
-		<MuiPickersUtilsProvider utils={MomentUtils}>
-			<Router basename="/admin">
-				<Switch>
-					<Route path="/" component={App} />
-				</Switch>
-			</Router>
-		</MuiPickersUtilsProvider>
-	</Provider>
-);
+//iOS/// appcenter codepush deployment list -a g-group/tima-1
+// ┌────────────┬──────────────────────────────────────────────────────────────────┐
+// │ Name       │ Deployment Key                                                   │
+// ├────────────┼──────────────────────────────────────────────────────────────────┤
+// │ Production │ b3sqbZpzOh1ODjds5a0WtiCE26ko20d7fb24-e27f-4ed2-88e0-157ff447f8bd │
+// ├────────────┼──────────────────────────────────────────────────────────────────┤
+// │ Staging    │ EV1Ji43thXOEOnd5461ElaBLKR-120d7fb24-e27f-4ed2-88e0-157ff447f8bd │
+// └────────────┴──────────────────────────────────────────────────────────────────┘
 
-export default MainApp;
+//app tima sku apple:SanTima Apple ID: 1291754151
