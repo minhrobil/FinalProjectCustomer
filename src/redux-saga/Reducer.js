@@ -34,6 +34,8 @@ import { actionLoanExtraReducer } from './actionLoanExtra';
 import { actionCloseLoanReducer } from './actionCloseLoan';
 import { getMoneyLoanCloseReducer } from './moneyLoanClose';
 import { payDebitMoneyReducer } from './payDebitMoney';
+import { signupReducer } from './signup';
+import { userInfoReducer } from './userInfo';
 
 const defaultGetFormData = {
 	isLoading: false,
@@ -256,6 +258,8 @@ const reducer = combineReducers({
 	GetRecentReport,
 	GetCommonData,
 	GetDebtReminder,
-	GetContracts
+	GetContracts,
+	signupReducer,
+	userInfoReducer
 });
 export default reducer;

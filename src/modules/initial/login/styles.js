@@ -3,10 +3,9 @@ import { Config } from '../../../Utilities/Config';
 import { Styles as Style } from '../../../Utilities/Styles';
 
 export default (styles = StyleSheet.create({
-	
 	mview_submit: { borderRadius: 40 },
 	view_search: {
-		borderRadius: 4,
+		borderRadius: 4
 	},
 	button_submit: {
 		width: '105%',
@@ -14,10 +13,10 @@ export default (styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: Style.fontSize,
-		fontWeight: Config.os==2 ? 'bold' : '500',
+		fontWeight: Config.os == 2 ? 'bold' : '500',
 		color: '#3f3f3f',
-		marginTop:30,
-		marginBottom:Config.os ==2 ? 5 : 1
+		marginTop: 15,
+		marginBottom: Config.os == 2 ? 5 : 1
 	},
 	text_input: {
 		width: '100%',
@@ -86,5 +85,4 @@ export default (styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	}
-
 }));

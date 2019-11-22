@@ -36,6 +36,8 @@ import { actionLoanExtraSaga, ACTION_LOAN_EXTRA } from './actionLoanExtra';
 import { actionCloseLoanSaga, ACTION_CLOSE_LOAN } from './actionCloseLoan';
 import { getMoneyLoanCloseSaga, GET_MONEY_LOAN_CLOSE } from './moneyLoanClose';
 import { payDebitMoneySaga, PAY_DEBIT_MONEY } from './payDebitMoney';
+import { signupSaga, SIGNUP } from './signup';
+import { setUserInfoSaga, SET_USER_INFO, deleteUserInfoSaga, DELETE_USER_INFO } from './userInfo';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -55,15 +57,15 @@ function* login(action) {
 		const response = yield Services.login(action.username, action.password);
 		console.log('login', response);
 		if (response.status === 200) {
-			if (response.data.Result === 1) {
+			if (response.data.status === 'success') {
 				yield MAsyncStorage.setAccountInfo(action.username, action.password);
-				yield MAsyncStorage.setUserInfo(response.data.Data);
-				yield put({ type: LOG_IN_SUCCESS, data: response.data.Data });
+				yield MAsyncStorage.setUserInfo(response.data.data);
+				yield put({ type: LOG_IN_SUCCESS, data: response.data.data, message: response.data.msg });
 			} else {
-				yield put({ type: LOG_IN_ERROR, code: response.data.Result, message: response.data.Message });
+				yield put({ type: LOG_IN_ERROR, code: response.data.status_code, message: response.data.msg });
 			}
 		} else {
-			yield put({ type: LOG_IN_ERROR, code: response.status });
+			yield put({ type: LOG_IN_ERROR, code: response.data.status_code, message: response.data.msg });
 		}
 	} catch (error) {
 		yield put({ type: LOG_IN_ERROR, error: error });
@@ -185,6 +187,10 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(SET_USER_INFO, setUserInfoSaga);
+	yield takeLatest(DELETE_USER_INFO, deleteUserInfoSaga);
+
+	yield takeLatest(SIGNUP, signupSaga);
 	yield takeLatest(PAY_DEBIT_MONEY, payDebitMoneySaga);
 	yield takeLatest(ACTION_CLOSE_LOAN, actionCloseLoanSaga);
 	yield takeLatest(GET_MONEY_LOAN_CLOSE, getMoneyLoanCloseSaga);

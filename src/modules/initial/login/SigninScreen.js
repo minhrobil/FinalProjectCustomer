@@ -10,39 +10,60 @@ import MButton from '../../../components/customize/MButton';
 import LinearGradient from 'react-native-linear-gradient';
 import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../../components/customize/MAlert';
-import { login } from '../../../redux-saga/Action';
+import { signupAction } from '../../../redux-saga/signup';
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../../Utilities/MAsyncStorage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MShadowView from '../../../components/customize/MShadowView';
 import styles from './styles';
+import { ActivityIndicator } from 'react-native-paper';
 class LoginScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			phone_code: '',
-			phone_number: '',
-			first_name: '',
-			last_name: ''
+			username: '',
+			password: '',
+			re_password: '',
+			name: '',
+			email: '',
+			phone: '',
+			address: ''
 		};
 	}
 
 	_submit = () => {
-		if (this.state.phone_code && this.state.phone_number && this.state.first_name && this.state.last_name) {
-			this.props.navigation.navigate('SMSValidation', {
-				phone_code: this.state.phone_code,
-				phone_number: this.state.phone_number
-			});
+		const { username, password, re_password, name, email, phone, address } = this.state;
+		if (
+			this.state.username &&
+			this.state.password &&
+			this.state.re_password &&
+			this.state.re_password == this.state.password &&
+			this.state.name &&
+			this.state.phone
+		) {
+			var body = {
+				username,
+				password,
+				name,
+				email,
+				phone,
+				address
+			};
+			this.props.signupAction(body);
 		} else {
-			if (this.state.phone_code.length < 2) {
-				this.alert.showAlert(`You must enter phone code`, () => {});
-			} else if (this.state.phone_number == '') {
-				this.alert.showAlert(`You must enter phone number`, () => {});
-			} else if (this.state.first_name == '') {
-				this.alert.showAlert(`You must enter first name`, () => {});
-			} else if (this.state.last_name == '') {
-				this.alert.showAlert(`You must enter last name`, () => {});
+			if (this.state.username == '') {
+				this.alert.showAlert(`Bạn phải nhập tài khoản`, () => {});
+			} else if (this.state.password == '') {
+				this.alert.showAlert(`Bạn phải nhập mật khẩu`, () => {});
+			} else if (this.state.re_password == '') {
+				this.alert.showAlert(`Bạn phải nhập lại mật khẩu`, () => {});
+			} else if (this.state.re_password != this.state.password) {
+				this.alert.showAlert(`Mật khẩu không khớp`, () => {});
+			} else if (this.state.name == '') {
+				this.alert.showAlert(`Bạn phải nhập họ tên`, () => {});
+			} else if (this.state.phone == '') {
+				this.alert.showAlert(`Bạn phải nhập số điện thoại`, () => {});
 			}
 		}
 	};
@@ -51,114 +72,117 @@ class LoginScreen extends React.Component {
 		this.props.navigation.pop();
 	};
 	componentDidUpdate(PrevProps) {
-		// if (PrevProps.loginRes.isError) {
-		// 	this.alert.showAlert(PrevProps.loginRes.message ? PrevProps.loginRes.message : 'Có lỗi xảy ra!', () => {});
-		// } else {
-		// 	if (this.props.loginRes != PrevProps.loginRes) {
-		// 		if (this.props.loginRes.isSuccess) {
-		// 			this.props.navigation.dispatch(
-		// 				StackActions.reset({
-		// 					index: 0,
-		// 					actions: [ NavigationActions.navigate({ routeName: 'main' }) ]
-		// 				})
-		// 			);
-		// 		}
-		// 	}
-		// }
+		if (this.props.signupReducer != PrevProps.signupReducer) {
+			if (this.props.signupReducer.isError) {
+				this.alert.showAlert(
+					this.props.signupReducer.message ? this.props.signupReducer.message : 'Có lỗi xảy ra!',
+					() => {}
+				);
+			}
+			if (this.props.signupReducer.isSuccess) {
+				this.alert.showAlert(this.props.signupReducer.message, () => {
+					this.props.navigation.dispatch(
+						StackActions.reset({
+							index: 0,
+							actions: [ NavigationActions.navigate({ routeName: 'main' }) ]
+						})
+					);
+				});
+			}
+		}
 	}
-	onChangePhoneCode = (text) => {
+	onChangePassword = (text) => {
 		this.setState({
-			phone_code: text
+			password: text
 		});
 	};
-	onChangePhoneNumber = (text) => {
+	onChangeRePassword = (text) => {
 		this.setState({
-			phone_number: text
+			re_password: text
 		});
 	};
-	onChangeFirstName = (text) => {
+	onChangeUsername = (text) => {
 		this.setState({
-			first_name: text
+			username: text
 		});
 	};
-	onChangeLastName = (text) => {
+	onChangeName = (text) => {
 		this.setState({
-			last_name: text
+			name: text
 		});
 	};
-	view_input_phone_code() {
-		return (
-			<MShadowView style={styles.view_search}>
-				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
-					<View
-						style={{
-							backgroundColor: 'white',
-							justifyContent: 'center',
-							alignItems: 'flex-end'
-							// width: 30
-						}}
-					>
-						<TextPoppin style={([ styles.title ], { color: '#656565', fontSize: 20 })}>+</TextPoppin>
-					</View>
-					<TextInput
-						placeholder="00"
-						value={this.state.phone_code}
-						maxLength={5}
-						keyboardType="numeric"
-						onChangeText={this.onChangePhoneCode}
-						style={[ styles.text_input, { flex: 1 } ]}
-					/>
-				</View>
-			</MShadowView>
-		);
-	}
-	view_input_phone_number() {
+	onChangeEmail = (text) => {
+		this.setState({
+			email: text
+		});
+	};
+	onChangeAddress = (text) => {
+		this.setState({
+			address: text
+		});
+	};
+	onChangePhone = (text) => {
+		this.setState({
+			phone: text
+		});
+	};
+	view_input_username() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
-						value={this.state.phone_number}
-						maxLength={13}
-						placeholder="input your phone number"
-						keyboardType="numeric"
-						onChangeText={this.onChangePhoneNumber}
+						value={this.state.username}
+						placeholder="Nhập tài khoản"
+						onChangeText={this.onChangeUsername}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
 			</MShadowView>
 		);
 	}
-	view_input_first_name() {
+	view_input_name() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
-						value={this.state.first_name}
-						maxLength={13}
-						placeholder="input your first name"
-						onChangeText={this.onChangeFirstName}
+						value={this.state.name}
+						placeholder="Nhập họ tên"
+						onChangeText={this.onChangeName}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
 			</MShadowView>
 		);
 	}
-	view_input_last_name() {
+	view_input_email() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
-						value={this.state.last_name}
-						placeholder="input your last name"
-						maxLength={13}
-						onChangeText={this.onChangeLastName}
+						value={this.state.email}
+						placeholder="Nhập email"
+						onChangeText={this.onChangeEmail}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
 			</MShadowView>
 		);
 	}
-	view_submit() {
+	view_input_address() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.address}
+						placeholder="Nhập địa chỉ"
+						onChangeText={this.onChangeAddress}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_submit = () => {
 		return (
 			<View
 				style={{
@@ -169,53 +193,117 @@ class LoginScreen extends React.Component {
 				}}
 			>
 				<MShadowView style={styles.mview_submit}>
-					<TouchableOpacity onPress={this._submit} style={styles.btnLogin}>
-						<FastImage
-							style={styles.button_submit}
-							source={require('../../../assets/images/button_submit.png')}
-							resizeMode="contain"
-						/>
-					</TouchableOpacity>
+					{this.props.signupReducer.isLoading ? (
+						<ActivityIndicator size="large" color={Style.primaryColor} />
+					) : (
+						<TouchableOpacity onPress={this._submit} style={styles.btnLogin}>
+							<FastImage
+								style={styles.button_submit}
+								source={require('../../../assets/images/button_submit.png')}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+					)}
 				</MShadowView>
 			</View>
+		);
+	};
+	view_input_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.password}
+						placeholder="Nhập mật khẩu"
+						secureTextEntry
+						onChangeText={this.onChangePassword}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_phone() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.phone}
+						maxLength={13}
+						placeholder="Nhập số điện thoại"
+						keyboardType="numeric"
+						onChangeText={this.onChangePhone}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_re_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.re_password}
+						placeholder="Nhập lại mật khẩu"
+						secureTextEntry
+						onChangeText={this.onChangeRePassword}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
 		);
 	}
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
-				<KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+				<KeyboardAwareScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
 					<ScrollView
-						showsVerticalScrollIndicator={false}
+						keyboardShouldPersistTaps="handled"
 						style={{ flex: 1 }}
 						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}
-						showsVerticalScrollIndicator={true}
 					>
 						<View style={styles.containLogo}>
 							<FastImage style={styles.logo} source={require('../../../assets/images/logo_login.png')} />
 						</View>
 						{/* <View style={{ height: Config.heightDevice * 0.1 }} /> */}
 						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
-							<TextPoppin style={styles.title}>Phone number</TextPoppin>
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_phone_code()}</View>
-								{/* <View style={{ width: Config.os==2 ? 4 : 12 }} /> */}
-								<View style={{ flex: 3 }}>{this.view_input_phone_number()}</View>
+							<TextPoppin style={styles.title}>Họ tên *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 3 }}>{this.view_input_name()}</View>
 							</View>
-							<TextPoppin style={styles.title}>First Name</TextPoppin>
-							<View style={{flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_first_name()}</View>
+							<TextPoppin style={styles.title}>Số điện thoại *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 3 }}>{this.view_input_phone()}</View>
 							</View>
-							<TextPoppin style={styles.title}>Last Name</TextPoppin>
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
-							<View style={{ flex: 1 }}>{this.view_input_last_name()}</View>
+							<TextPoppin style={styles.title}>Tài khoản *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 3 }}>{this.view_input_username()}</View>
 							</View>
+							<TextPoppin style={styles.title}>Mật khẩu *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 1 }}>{this.view_input_password()}</View>
+							</View>
+							<TextPoppin style={styles.title}>Nhập lại mật khẩu *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 1 }}>{this.view_input_re_password()}</View>
+							</View>
+							<TextPoppin style={styles.title}>Địa chỉ *</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 3 }}>{this.view_input_address()}</View>
+							</View>
+							<TextPoppin style={styles.title}>Email</TextPoppin>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 3 }}>{this.view_input_email()}</View>
+							</View>
+
 							{this.view_submit()}
 
 							<TextPoppin
 								onPress={this.goLogin}
 								style={[ styles.title, { color: '#656565', textAlign: 'center', margin: 20 } ]}
 							>
-								Back to Login
+								Quay lại đăng nhập
 							</TextPoppin>
 						</View>
 					</ScrollView>
@@ -232,8 +320,8 @@ class LoginScreen extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		loginRes: state.Login
+		signupReducer: state.signupReducer
 	};
 }
 
-export default connect(mapStateToProps, { login })(LoginScreen);
+export default connect(mapStateToProps, { signupAction })(LoginScreen);

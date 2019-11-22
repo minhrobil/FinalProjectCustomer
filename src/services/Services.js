@@ -19,7 +19,7 @@ function getInstance(baseUrl, user) {
 		timeout: 50000,
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: user.token ? 'Bearer ' + user.token : undefined
+			Authorization: user ? (user.token ? user.token : undefined) : undefined
 		}
 	});
 }
@@ -63,7 +63,7 @@ function* getFormData(params) {
 }
 
 function* login(username, password) {
-	return yield execute(Endpoint.API_LOG_IN, Method.POST, {
+	return yield execute('login', Method.POST, {
 		username: username,
 		password: password
 	});

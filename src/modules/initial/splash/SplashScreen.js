@@ -22,19 +22,19 @@ class SplashScreen extends React.Component {
 		};
 	}
 
-	// componentDidMount(){
-	//     setTimeout(()=>{
-	//         this.props.navigation.dispatch(
-	//             StackActions.reset({
-	//                 index: 0,
-	//                 actions: [NavigationActions.navigate({routeName: 'login'})]
-	//             })
-	//         );
-	//     },1000);
-	// }
+	checkUserInfo = async () => {
+		const user = await MAsyncStorage.getUserInfo();
+		console.log(user);
+
+		if (user) {
+			this._goMain();
+		} else {
+			this._goLogin();
+		}
+	};
 
 	componentDidMount() {
-		this._goLogin();
+		this.checkUserInfo();
 		// this.checkCodePushFinish();
 		// codePush.sync({
 		//     updateDialog: false,
@@ -99,7 +99,6 @@ class SplashScreen extends React.Component {
 		this.props.navigation.dispatch(
 			StackActions.reset({
 				index: 0,
-				// actions: [ NavigationActions.navigate({ routeName: 'main' }) ]
 				actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
 			})
 		);

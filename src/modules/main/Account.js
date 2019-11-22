@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity,Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
 import MView from '../../components/customize/MView';
 import FastImage from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
@@ -9,16 +9,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Styles as Style } from '../../Utilities/Styles';
 import MButton from '../../components/customize/MButton';
 import LinearGradient from 'react-native-linear-gradient';
-import { NavigationActions, StackActions } from 'react-navigation'; 
+import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../components/customize/MAlert';
-import { login } from '../../redux-saga/Action';
+import { deleteUserInfoAction } from '../../redux-saga/userInfo';
 import { connect } from 'react-redux';
-import MAsyncStorage from '../../Utilities/MAsyncStorage'; 
+import MAsyncStorage from '../../Utilities/MAsyncStorage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MShadowView from '../../components/customize/MShadowView';
 import HeaderCommon from '../../components/customize/HeaderCommon';
-import pencil from "../../assets/images/pencil.png"
+import pencil from '../../assets/images/pencil.png';
 class Account extends React.Component {
 	constructor(props) {
 		super(props);
@@ -29,19 +29,14 @@ class Account extends React.Component {
 				first_name: 'Nguyen',
 				last_name: 'Minh'
 			}
-			
 		};
 	}
-
-
 
 	goLogin = () => {
 		this.props.navigation.pop();
 	};
-	componentDidUpdate(PrevProps) {
-	
-	}
-	
+	componentDidUpdate(PrevProps) {}
+
 	view_input_phone_code() {
 		return (
 			<MShadowView style={styles.view_search}>
@@ -119,15 +114,18 @@ class Account extends React.Component {
 		);
 	}
 	goEdit = () => {
-		this.props.navigation.navigate('AccountEdit',{account:this.state.account})
-	}
+		this.props.navigation.navigate('AccountEdit', { account: this.state.account });
+	};
 	logout = () => {
+		MAsyncStorage.clearAll();
+		this.props.deleteUserInfoAction();
 		this.props.navigation.dispatch(
 			StackActions.reset({
 				index: 0,
-				actions: [NavigationActions.navigate({routeName: 'LoginScreen'})]
+				actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
 			})
-		);	}
+		);
+	};
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
@@ -140,36 +138,42 @@ class Account extends React.Component {
 						showsVerticalScrollIndicator={true}
 					>
 						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
-							<View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'flex-end'}}>
+							<View
+								style={{
+									justifyContent: 'space-between',
+									flexDirection: 'row',
+									alignItems: 'flex-end'
+								}}
+							>
 								<TextPoppin style={styles.title}>Phone number</TextPoppin>
-								<TouchableOpacity
-									onPress={this.goEdit}
-								>
-
-									<FastImage source={pencil}
-										style={{width:40,height:40, marginBottom:8}}
+								<TouchableOpacity onPress={this.goEdit}>
+									<FastImage
+										source={pencil}
+										style={{ width: 40, height: 40, marginBottom: 8 }}
 										resizeMode="contain"
-									></FastImage>
+									/>
 								</TouchableOpacity>
-								
 							</View>
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 								<View style={{ flex: 1 }}>{this.view_input_phone_code()}</View>
 								{/* <View style={{ width: Config.os==2 ? 4 : 12 }} /> */}
 								<View style={{ flex: 3 }}>{this.view_input_phone_number()}</View>
 							</View>
 							<TextPoppin style={styles.title}>First Name</TextPoppin>
-							<View style={{flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 								<View style={{ flex: 1 }}>{this.view_input_first_name()}</View>
 							</View>
 							<TextPoppin style={styles.title}>Last Name</TextPoppin>
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
-							<View style={{ flex: 1 }}>{this.view_input_last_name()}</View>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 1 }}>{this.view_input_last_name()}</View>
 							</View>
-							
+
 							<TextPoppin
 								onPress={this.logout}
-								style={[ styles.title, { color: 'red', textAlign: 'center', margin: 50, opacity:0.5 } ]}
+								style={[
+									styles.title,
+									{ color: 'red', textAlign: 'center', margin: 50, opacity: 0.5 }
+								]}
 							>
 								Logout
 							</TextPoppin>
@@ -188,16 +192,16 @@ class Account extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		loginRes: state.Login
+		userInfoReducer: state.userInfoReducer
 	};
 }
 
-export default connect(mapStateToProps, { login })(Account);
+export default connect(mapStateToProps, { deleteUserInfoAction })(Account);
 
 const styles = StyleSheet.create({
 	mview_submit: { borderRadius: 40 },
 	view_search: {
-		borderRadius: 4,
+		borderRadius: 4
 	},
 	button_submit: {
 		width: '100%',
@@ -205,10 +209,10 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: Style.fontSize,
-		fontWeight: Config.os==2 ? 'bold' : '500',
+		fontWeight: Config.os == 2 ? 'bold' : '500',
 		color: '#3f3f3f',
-		marginTop:30,
-		marginBottom:Config.os ==2 ? 5 : 1
+		marginTop: 30,
+		marginBottom: Config.os == 2 ? 5 : 1
 	},
 	text_input: {
 		width: '100%',
@@ -277,4 +281,4 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	}
-})
+});
