@@ -34,38 +34,47 @@ class LoginScreen extends React.Component {
 
 	_submit = () => {
 		const { username, password, re_password, name, email, phone, address } = this.state;
-		if (
-			this.state.username &&
-			this.state.password &&
-			this.state.re_password &&
-			this.state.re_password == this.state.password &&
-			this.state.name &&
-			this.state.phone
-		) {
-			var body = {
-				username,
-				password,
-				name,
-				email,
-				phone,
-				address
-			};
-			this.props.signupAction(body);
-		} else {
-			if (this.state.username == '') {
-				this.alert.showAlert(`Bạn phải nhập tài khoản`, () => {});
-			} else if (this.state.password == '') {
-				this.alert.showAlert(`Bạn phải nhập mật khẩu`, () => {});
-			} else if (this.state.re_password == '') {
-				this.alert.showAlert(`Bạn phải nhập lại mật khẩu`, () => {});
-			} else if (this.state.re_password != this.state.password) {
-				this.alert.showAlert(`Mật khẩu không khớp`, () => {});
-			} else if (this.state.name == '') {
-				this.alert.showAlert(`Bạn phải nhập họ tên`, () => {});
-			} else if (this.state.phone == '') {
-				this.alert.showAlert(`Bạn phải nhập số điện thoại`, () => {});
-			}
-		}
+
+		this.alert.showAlert(
+			`Xác nhận đăng ký tài khoản`,
+			() => {
+				setTimeout(() => {
+					if (
+						this.state.username &&
+						this.state.password &&
+						this.state.re_password &&
+						this.state.re_password == this.state.password &&
+						this.state.name &&
+						this.state.phone
+					) {
+						var body = {
+							username,
+							password,
+							name,
+							email,
+							phone,
+							address
+						};
+						this.props.signupAction(body);
+					} else {
+						if (this.state.username == '') {
+							this.alert.showAlert(`Bạn phải nhập tài khoản`, () => {});
+						} else if (this.state.password == '') {
+							this.alert.showAlert(`Bạn phải nhập mật khẩu`, () => {});
+						} else if (this.state.re_password == '') {
+							this.alert.showAlert(`Bạn phải nhập lại mật khẩu`, () => {});
+						} else if (this.state.re_password != this.state.password) {
+							this.alert.showAlert(`Mật khẩu không khớp`, () => {});
+						} else if (this.state.name == '') {
+							this.alert.showAlert(`Bạn phải nhập họ tên`, () => {});
+						} else if (this.state.phone == '') {
+							this.alert.showAlert(`Bạn phải nhập số điện thoại`, () => {});
+						}
+					}
+				}, 500);
+			},
+			() => {}
+		);
 	};
 
 	goLogin = () => {

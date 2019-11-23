@@ -38,6 +38,10 @@ import { getMoneyLoanCloseSaga, GET_MONEY_LOAN_CLOSE } from './moneyLoanClose';
 import { payDebitMoneySaga, PAY_DEBIT_MONEY } from './payDebitMoney';
 import { signupSaga, SIGNUP } from './signup';
 import { setUserInfoSaga, SET_USER_INFO, deleteUserInfoSaga, DELETE_USER_INFO } from './userInfo';
+import { UPDATE_ACCOUNT, updateAccountSaga } from './updateAccount';
+import { checkTokenSaga, CHECK_TOKEN } from './checkToken';
+import { changePassSaga, CHANGE_PASS } from './changePass';
+import { listProductSaga, LIST_PRODUCT } from './listProduct';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -187,6 +191,14 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(LIST_PRODUCT, listProductSaga);
+
+	yield takeLatest(CHANGE_PASS, changePassSaga);
+
+	yield takeLatest(CHECK_TOKEN, checkTokenSaga);
+
+	yield takeLatest(UPDATE_ACCOUNT, updateAccountSaga);
+
 	yield takeLatest(SET_USER_INFO, setUserInfoSaga);
 	yield takeLatest(DELETE_USER_INFO, deleteUserInfoSaga);
 

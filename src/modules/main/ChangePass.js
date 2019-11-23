@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../components/customize/MAlert';
 import { login } from '../../redux-saga/Action';
-import { updateAccountAction } from '../../redux-saga/updateAccount';
+import { changePassAction } from '../../redux-saga/changePass';
 import { setUserInfoAction } from '../../redux-saga/userInfo';
 
 import { connect } from 'react-redux';
@@ -26,33 +26,37 @@ class Account extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			account: this.props.navigation.state.params ? this.props.navigation.state.params.account : {}
+			account: this.props.navigation.state.params ? this.props.navigation.state.params.account : {},
+			old_password: '',
+			password: '',
+			re_password: ''
 		};
 	}
 
 	_submit = () => {
-		const { name, address, email, id } = this.state.account;
-		if (this.state.account.name && this.state.account.address) {
+		const { old_password, password, re_password } = this.state;
+		if (this.state.old_password && this.state.password && this.state.re_password) {
 			this.alert.showAlert(
-				`Bạn chắc chắn muốn cập nhật tài khoản?`,
+				`Bạn chắc chắn muốn đổi mật khẩu?`,
 				() => {
 					setTimeout(() => {
 						var body = {
-							name,
-							address,
-							email,
-							id
+							old_password,
+							new_password: password,
+							re_new_password: re_password
 						};
-						this.props.updateAccountAction(body);
+						this.props.changePassAction(body);
 					}, 500);
 				},
 				() => {}
 			);
 		} else {
-			if (this.state.account.name == '') {
-				this.alert.showAlert(`Họ tên không được để trống`, () => {});
-			} else if (this.state.account.phone_number == '') {
-				this.alert.showAlert(`Địa chỉ không được bỏ trống`, () => {});
+			if (this.state.old_password == '') {
+				this.alert.showAlert(`Mật khẩu cũ không được để trống`, () => {});
+			} else if (this.state.password == '') {
+				this.alert.showAlert(`Mật khẩu mới không được bỏ trống`, () => {});
+			} else if (this.state.re_password == '') {
+				this.alert.showAlert(`Nhập lại mật khẩu mới không được bỏ trống`, () => {});
 			}
 		}
 	};
@@ -61,84 +65,77 @@ class Account extends React.Component {
 		this.props.navigation.pop();
 	};
 	componentDidUpdate(PrevProps) {
-		if (this.props.updateAccountReducer != PrevProps.updateAccountReducer) {
-			if (this.props.updateAccountReducer.isSuccess) {
-				var data = {
-					...this.props.userInfoReducer.data,
-					user: this.props.updateAccountReducer.data
-				};
-				console.log(data);
-
-				this.props.setUserInfoAction(data);
-				MAsyncStorage.setUserInfo(data);
-				this.alert.showAlert(this.props.updateAccountReducer.message, () => {});
+		if (this.props.changePassReducer != PrevProps.changePassReducer) {
+			if (this.props.changePassReducer.isSuccess) {
+				// var data = {
+				// 	...this.props.userInfoReducer.data,
+				// 	user: this.props.changePassReducer.data
+				// };
+				// console.log(data);
+				// this.props.setUserInfoAction(data);
+				// MAsyncStorage.setUserInfo(data);
+				this.alert.showAlert(this.props.changePassReducer.message, () => {});
 			}
-			if (this.props.updateAccountReducer.isError) {
-				this.alert.showAlert(this.props.updateAccountReducer.message, () => {});
+			if (this.props.changePassReducer.isError) {
+				this.alert.showAlert(this.props.changePassReducer.message, () => {});
 			}
 		}
 	}
-	onChangeName = (text) => {
+	onChangeOldPassword = (text) => {
 		this.setState({
-			account: {
-				...this.state.account,
-				name: text
-			}
+			old_password: text
 		});
 	};
-	onChangeEmail = (text) => {
+	onChangePassword = (text) => {
 		this.setState({
-			account: {
-				...this.state.account,
-				email: text
-			}
+			password: text
 		});
 	};
-	onChangeAddress = (text) => {
+	onChangeRePassword = (text) => {
 		this.setState({
-			account: {
-				...this.state.account,
-				address: text
-			}
+			re_password: text
 		});
 	};
+	view_input_old_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.old_password}
+						placeholder="Nhập mật khẩu cũ"
+						secureTextEntry
+						onChangeText={this.onChangeOldPassword}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.password}
+						placeholder="Nhập mật khẩu mới"
+						secureTextEntry
+						onChangeText={this.onChangePassword}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
 
-	view_input_name() {
+	view_input_re_password() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
-						value={this.state.account.name}
-						placeholder="Nhập họ tên"
-						onChangeText={this.onChangeName}
-						style={[ styles.text_input, { flex: 3 } ]}
-					/>
-				</View>
-			</MShadowView>
-		);
-	}
-	view_input_email() {
-		return (
-			<MShadowView style={styles.view_search}>
-				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
-					<TextInput
-						value={this.state.account.email}
-						placeholder="Nhập email"
-						onChangeText={this.onChangeEmail}
-						style={[ styles.text_input, { flex: 3 } ]}
-					/>
-				</View>
-			</MShadowView>
-		);
-	}
-	view_input_address() {
-		return (
-			<MShadowView style={styles.view_search}>
-				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
-					<TextInput
-						value={this.state.account.address}
-						placeholder="Nhập địa chỉ"
-						onChangeText={this.onChangeAddress}
+						value={this.state.re_password}
+						placeholder="Nhập lại mật khẩu mới"
+						secureTextEntry
+						onChangeText={this.onChangeRePassword}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
@@ -164,7 +161,7 @@ class Account extends React.Component {
 						<TextPoppin
 							style={[ styles.title, { color: 'white', fontSize: 20, marginTop: 0, marginBottom: 0 } ]}
 						>
-							Cập nhật
+							Đổi mật khẩu
 						</TextPoppin>
 					</TouchableOpacity>
 				</MShadowView>
@@ -174,7 +171,7 @@ class Account extends React.Component {
 	render = () => {
 		return (
 			<MView statusbarColor={'white'}>
-				<HeaderCommon title="Cập nhật tài khoản" actionLeft={this.props.navigation.goBack} />
+				<HeaderCommon title="Đổi mật khẩu" actionLeft={this.props.navigation.goBack} />
 				<KeyboardAwareScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
 					<ScrollView
 						keyboardShouldPersistTaps="handled"
@@ -182,19 +179,19 @@ class Account extends React.Component {
 						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}
 					>
 						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
-							<TextPoppin style={styles.title}>Họ tên</TextPoppin>
+							<TextPoppin style={styles.title}>Mật khẩu cũ *</TextPoppin>
 
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 3 }}>{this.view_input_name()}</View>
+								<View style={{ flex: 3 }}>{this.view_input_old_password()}</View>
 							</View>
-							<TextPoppin style={styles.title}>Địa chỉ</TextPoppin>
+							<TextPoppin style={styles.title}>Mật khẩu mới *</TextPoppin>
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 3 }}>{this.view_input_address()}</View>
+								<View style={{ flex: 3 }}>{this.view_input_password()}</View>
 							</View>
 							<View>
-								<TextPoppin style={styles.title}>Email</TextPoppin>
+								<TextPoppin style={styles.title}>Nhập lại mật khẩu mới *</TextPoppin>
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-									<View style={{ flex: 3 }}>{this.view_input_email()}</View>
+									<View style={{ flex: 3 }}>{this.view_input_re_password()}</View>
 								</View>
 							</View>
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
@@ -217,11 +214,11 @@ class Account extends React.Component {
 function mapStateToProps(state) {
 	return {
 		userInfoReducer: state.userInfoReducer,
-		updateAccountReducer: state.updateAccountReducer
+		changePassReducer: state.changePassReducer
 	};
 }
 
-export default connect(mapStateToProps, { setUserInfoAction, updateAccountAction })(Account);
+export default connect(mapStateToProps, { setUserInfoAction, changePassAction })(Account);
 
 const styles = StyleSheet.create({
 	mview_submit: { borderRadius: 40 },

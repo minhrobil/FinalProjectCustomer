@@ -13,6 +13,10 @@ import { connect } from 'react-redux';
 import { checkSession, login } from '../../../redux-saga/Action';
 import MAsyncStorage from '../../../Utilities/MAsyncStorage';
 import { Constant } from '../../../Utilities/Constant';
+import { setUserInfoAction } from '../../../redux-saga/userInfo';
+import { checkTokenAction } from '../../../redux-saga/checkToken';
+import styles from './styles';
+import { ActivityIndicator } from 'react-native-paper';
 
 class SplashScreen extends React.Component {
 	constructor(props) {
@@ -25,14 +29,24 @@ class SplashScreen extends React.Component {
 	checkUserInfo = async () => {
 		const user = await MAsyncStorage.getUserInfo();
 		console.log(user);
-
 		if (user) {
-			this._goMain();
+			this.props.checkTokenAction();
 		} else {
-			this._goLogin();
+			this.goProduct();
 		}
 	};
-
+	componentDidUpdate(PrevProps) {
+		if (this.props.checkTokenReducer != PrevProps.checkTokenReducer) {
+			if (this.props.checkTokenReducer.isSuccess) {
+				this._goMain();
+				this.props.setUserInfoAction(this.props.checkTokenReducer.data);
+				MAsyncStorage.setUserInfo(this.props.checkTokenReducer.data);
+			}
+			if (this.props.checkTokenReducer.isError) {
+				this.goProduct();
+			}
+		}
+	}
 	componentDidMount() {
 		this.checkUserInfo();
 		// this.checkCodePushFinish();
@@ -85,16 +99,6 @@ class SplashScreen extends React.Component {
 		}
 	}
 
-	componentWillReceiveProps({ checkSessionRes }) {
-		if (checkSessionRes.isError) {
-			this._goLogin();
-		} else {
-			if (checkSessionRes.data) {
-				this._goMain();
-			}
-		}
-	}
-
 	_goLogin() {
 		this.props.navigation.dispatch(
 			StackActions.reset({
@@ -112,6 +116,14 @@ class SplashScreen extends React.Component {
 			})
 		);
 	}
+	goProduct() {
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [ NavigationActions.navigate({ routeName: 'Product' }) ]
+			})
+		);
+	}
 
 	render() {
 		return (
@@ -119,6 +131,13 @@ class SplashScreen extends React.Component {
 				<View style={{ flex: 1, position: 'absolute', width: '100%', height: '100%' }}>
 					<View style={{ flex: 1 }} />
 				</View>
+				<View style={styles.containLogo}>
+					<FastImage style={styles.logo} source={require('../../../assets/images/logo_login.png')} />
+				</View>
+				<View style={{ margin: 100 }}>
+					<ActivityIndicator size="large" color={Styles.primaryColor} />
+				</View>
+
 				{this.state.progress > 0 ? (
 					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 						<ProgressCircle
@@ -147,8 +166,8 @@ class SplashScreen extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		// checkSessionRes: state.CheckSession
+		checkTokenReducer: state.checkTokenReducer
 	};
 }
 
-export default connect(mapStateToProps, { checkSession })(SplashScreen);
+export default connect(mapStateToProps, { checkSession, setUserInfoAction, checkTokenAction })(SplashScreen);

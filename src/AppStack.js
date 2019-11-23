@@ -10,6 +10,8 @@ import Deliveries from './modules/main/Deliveries';
 import DeliveryDetail from './modules/main/DeliveryDetail';
 import Account from './modules/main/Account';
 import AccountEdit from './modules/main/AccountEdit';
+import ChangePass from './modules/main/ChangePass';
+import Product from './modules/main/Product';
 
 import SMSValidation from './modules/initial/login/SMSValidation';
 import SigninScreen from './modules/initial/login/SigninScreen';
@@ -94,6 +96,12 @@ const routeStack = createStackNavigator(
 		},
 		AccountEdit: {
 			screen: AccountEdit
+		},
+		ChangePass: {
+			screen: ChangePass
+		},
+		Product: {
+			screen: Product
 		}
 	},
 	{

@@ -36,6 +36,10 @@ import { getMoneyLoanCloseReducer } from './moneyLoanClose';
 import { payDebitMoneyReducer } from './payDebitMoney';
 import { signupReducer } from './signup';
 import { userInfoReducer } from './userInfo';
+import { updateAccountReducer } from './updateAccount';
+import { checkTokenReducer } from './checkToken';
+import { changePassReducer } from './changePass';
+import { listProductReducer } from './listProduct';
 
 const defaultGetFormData = {
 	isLoading: false,
@@ -240,6 +244,10 @@ const GetContracts = (state = defaultGetFormData, action) => {
 };
 
 const reducer = combineReducers({
+	listProductReducer,
+	changePassReducer,
+	checkTokenReducer,
+	updateAccountReducer,
 	payDebitMoneyReducer,
 	getMoneyLoanCloseReducer,
 	actionCloseLoanReducer,

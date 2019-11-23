@@ -19,7 +19,7 @@ function getInstance(baseUrl, user) {
 		timeout: 50000,
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: user ? (user.token ? user.token : undefined) : undefined
+			Authorization: user ? (user.token ? 'Bearer ' + user.token : undefined) : undefined
 		}
 	});
 }

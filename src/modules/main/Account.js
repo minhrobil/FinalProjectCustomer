@@ -23,90 +23,157 @@ class Account extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			account: {
-				phone_code: '84',
-				phone_number: '989632045',
-				first_name: 'Nguyen',
-				last_name: 'Minh'
-			}
+			account: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user : null
 		};
 	}
 
 	goLogin = () => {
 		this.props.navigation.pop();
 	};
-	componentDidUpdate(PrevProps) {}
+	componentDidUpdate(PrevProps) {
+		console.log(this.props.userInfoReducer);
+		console.log('this.props.userInfoReducer');
+		if (this.props.userInfoReducer != PrevProps.userInfoReducer) {
+			this.setState({ account: this.props.userInfoReducer.data.user });
+		}
+	}
 
-	view_input_phone_code() {
+	onChangePassword = (text) => {
+		this.setState({
+			password: text
+		});
+	};
+	onChangeRePassword = (text) => {
+		this.setState({
+			re_password: text
+		});
+	};
+	onChangeUsername = (text) => {
+		this.setState({
+			username: text
+		});
+	};
+	onChangeName = (text) => {
+		this.setState({
+			name: text
+		});
+	};
+	onChangeEmail = (text) => {
+		this.setState({
+			email: text
+		});
+	};
+	onChangeAddress = (text) => {
+		this.setState({
+			address: text
+		});
+	};
+	onChangePhone = (text) => {
+		this.setState({
+			phone: text
+		});
+	};
+	view_input_username() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
-					<View
-						style={{
-							backgroundColor: 'white',
-							justifyContent: 'center',
-							alignItems: 'flex-end'
-							// width: 30
-						}}
-					>
-						<TextPoppin style={([ styles.title ], { color: '#656565', fontSize: 20 })}>+</TextPoppin>
-					</View>
 					<TextInput
 						editable={false}
-						placeholder="00"
-						value={this.state.account.phone_code}
-						maxLength={5}
-						keyboardType="numeric"
-						onChangeText={this.onChangePhoneCode}
-						style={[ styles.text_input, { flex: 1 } ]}
-					/>
-				</View>
-			</MShadowView>
-		);
-	}
-	view_input_phone_number() {
-		return (
-			<MShadowView style={styles.view_search}>
-				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
-					<TextInput
-						editable={false}
-						value={this.state.account.phone_number}
-						maxLength={13}
-						placeholder="input your phone number"
-						keyboardType="numeric"
-						onChangeText={this.onChangePhoneNumber}
+						value={this.state.account.username}
+						placeholder="Nhập tài khoản"
+						onChangeText={this.onChangeUsername}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
 			</MShadowView>
 		);
 	}
-	view_input_first_name() {
+	view_input_name() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
 						editable={false}
-						value={this.state.account.first_name}
-						maxLength={13}
-						placeholder="input your first name"
-						onChangeText={this.onChangeFirstName}
+						value={this.state.account.name}
+						placeholder="Nhập họ tên"
+						onChangeText={this.onChangeName}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
 			</MShadowView>
 		);
 	}
-	view_input_last_name() {
+	view_input_email() {
 		return (
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
 						editable={false}
-						value={this.state.account.last_name}
-						placeholder="input your last name"
+						value={this.state.account.email}
+						placeholder="Nhập email"
+						onChangeText={this.onChangeEmail}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_address() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						editable={false}
+						value={this.state.account.address}
+						placeholder="Nhập địa chỉ"
+						onChangeText={this.onChangeAddress}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.password}
+						placeholder="Nhập mật khẩu"
+						secureTextEntry
+						onChangeText={this.onChangePassword}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_phone() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						editable={false}
+						value={this.state.account.phone}
 						maxLength={13}
-						onChangeText={this.onChangeLastName}
+						placeholder="Nhập số điện thoại"
+						keyboardType="numeric"
+						onChangeText={this.onChangePhone}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
+	view_input_re_password() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.re_password}
+						placeholder="Nhập lại mật khẩu"
+						secureTextEntry
+						onChangeText={this.onChangeRePassword}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
 				</View>
@@ -116,68 +183,108 @@ class Account extends React.Component {
 	goEdit = () => {
 		this.props.navigation.navigate('AccountEdit', { account: this.state.account });
 	};
+	goChangePass = () => {
+		this.props.navigation.navigate('ChangePass', { account: this.state.account });
+	};
 	logout = () => {
-		MAsyncStorage.clearAll();
-		this.props.deleteUserInfoAction();
-		this.props.navigation.dispatch(
-			StackActions.reset({
-				index: 0,
-				actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
-			})
+		this.alert.showAlert(
+			`Bạn có chắc muốn đăng xuất`,
+			() => {
+				MAsyncStorage.clearAll();
+				this.props.deleteUserInfoAction();
+				this.props.navigation.dispatch(
+					StackActions.reset({
+						index: 0,
+						actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
+					})
+				);
+			},
+			() => {}
 		);
 	};
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
-				<HeaderCommon disableLeft title="Account" />
-				<KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+				<HeaderCommon disableLeft title="Tài khoản" />
+				<KeyboardAwareScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
 					<ScrollView
-						showsVerticalScrollIndicator={false}
+						keyboardShouldPersistTaps="handled"
 						style={{ flex: 1 }}
 						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}
-						showsVerticalScrollIndicator={true}
 					>
-						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
-							<View
-								style={{
-									justifyContent: 'space-between',
-									flexDirection: 'row',
-									alignItems: 'flex-end'
-								}}
-							>
-								<TextPoppin style={styles.title}>Phone number</TextPoppin>
-								<TouchableOpacity onPress={this.goEdit}>
-									<FastImage
-										source={pencil}
-										style={{ width: 40, height: 40, marginBottom: 8 }}
-										resizeMode="contain"
-									/>
-								</TouchableOpacity>
-							</View>
+						{this.state.account && (
+							<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
+								<View
+									style={{
+										justifyContent: 'space-between',
+										flexDirection: 'row',
+										alignItems: 'flex-end'
+									}}
+								>
+									<TextPoppin style={styles.title}>Họ tên</TextPoppin>
+									<TouchableOpacity onPress={this.goEdit}>
+										<FastImage
+											source={pencil}
+											style={{ width: 40, height: 40, marginBottom: 8 }}
+											resizeMode="contain"
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+									<View style={{ flex: 3 }}>{this.view_input_name()}</View>
+								</View>
+								<TextPoppin style={styles.title}>Số điện thoại</TextPoppin>
+								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+									<View style={{ flex: 3 }}>{this.view_input_phone()}</View>
+								</View>
+								<TextPoppin style={styles.title}>Tài khoản</TextPoppin>
+								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+									<View style={{ flex: 3 }}>{this.view_input_username()}</View>
+								</View>
+								{/* <TextPoppin style={styles.title}>Mật khẩu *</TextPoppin>
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_phone_code()}</View>
-								{/* <View style={{ width: Config.os==2 ? 4 : 12 }} /> */}
-								<View style={{ flex: 3 }}>{this.view_input_phone_number()}</View>
+								<View style={{ flex: 1 }}>{this.view_input_password()}</View>
 							</View>
-							<TextPoppin style={styles.title}>First Name</TextPoppin>
+							<TextPoppin style={styles.title}>Nhập lại mật khẩu *</TextPoppin>
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_first_name()}</View>
+								<View style={{ flex: 1 }}>{this.view_input_re_password()}</View>
+							</View> */}
+								<TextPoppin style={styles.title}>Địa chỉ</TextPoppin>
+								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+									<View style={{ flex: 3 }}>{this.view_input_address()}</View>
+								</View>
+								{this.state.account.email && (
+									<View>
+										<TextPoppin style={styles.title}>Email</TextPoppin>
+										<View
+											style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}
+										>
+											<View style={{ flex: 3 }}>{this.view_input_email()}</View>
+										</View>
+									</View>
+								)}
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+									<TextPoppin
+										onPress={this.logout}
+										style={[
+											styles.title,
+											{ color: 'red', textAlign: 'center', marginTop: 50, opacity: 0.5, flex: 1 }
+										]}
+									>
+										Đăng xuất
+									</TextPoppin>
+									<TextPoppin
+										onPress={this.goChangePass}
+										style={[
+											styles.title,
+											{ color: 'red', textAlign: 'center', marginTop: 50, opacity: 0.5, flex: 1 }
+										]}
+									>
+										Đổi mật khẩu
+									</TextPoppin>
+								</View>
 							</View>
-							<TextPoppin style={styles.title}>Last Name</TextPoppin>
-							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_last_name()}</View>
-							</View>
-
-							<TextPoppin
-								onPress={this.logout}
-								style={[
-									styles.title,
-									{ color: 'red', textAlign: 'center', margin: 50, opacity: 0.5 }
-								]}
-							>
-								Logout
-							</TextPoppin>
-						</View>
+						)}
 					</ScrollView>
 				</KeyboardAwareScrollView>
 				<MAlert

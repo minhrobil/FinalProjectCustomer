@@ -39,7 +39,7 @@ async function setAccountInfo(username, password) {
 }
 
 async function setBaseUrl(isV1) {
-	await AsyncStorage.setItem(BASE_URL, 'http://192.168.0.101:8088/FinalProjectAPI/');
+	await AsyncStorage.setItem(BASE_URL, 'http://18.138.58.252/FinalProjectAPI/');
 }
 
 async function getBaseUrl() {
@@ -47,7 +47,7 @@ async function getBaseUrl() {
 	if (url) {
 		return url;
 	} else {
-		return 'http://192.168.0.101:8088/FinalProjectAPI/';
+		return 'http://18.138.58.252/FinalProjectAPI/';
 	}
 }
 

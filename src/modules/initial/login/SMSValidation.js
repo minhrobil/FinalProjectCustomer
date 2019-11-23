@@ -151,12 +151,11 @@ class LoginScreen extends React.Component {
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
-				<KeyboardAwareScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+				<KeyboardAwareScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
 					<ScrollView
-						showsVerticalScrollIndicator={false}
+						keyboardShouldPersistTaps="handled"
 						style={{ flex: 1 }}
 						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}
-						showsVerticalScrollIndicator={true}
 					>
 						<View style={styles.containLogo}>
 							<FastImage style={styles.logo} source={require('../../../assets/images/logo_login.png')} />
@@ -164,19 +163,17 @@ class LoginScreen extends React.Component {
 						{/* <View style={{ height: Config.heightDevice * 0.1 }} /> */}
 						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
 							<TextPoppin style={styles.title}>Phone number</TextPoppin>
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 								<View style={{ flex: 1 }}>{this.view_input_phone_code()}</View>
 								{/* <View style={{ width: Config.os==2 ? 4 : 12 }} /> */}
 								<View style={{ flex: 3 }}>{this.view_input_phone_number()}</View>
 							</View>
 							<TextPoppin style={styles.title}>SMS code validation</TextPoppin>
 
-							<View style={{ flexDirection: 'row',marginHorizontal: Config.os==2? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_sms_validation()}
-								</View>
+							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+								<View style={{ flex: 1 }}>{this.view_input_sms_validation()}</View>
 							</View>
 							{this.view_submit()}
-
 							<TextPoppin
 								onPress={this.goBack}
 								style={[ styles.title, { color: '#656565', textAlign: 'center', margin: 20 } ]}
