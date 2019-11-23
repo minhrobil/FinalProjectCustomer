@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, TouchableOpacity, Text, TextInput, StyleSheet, FlatList } from 'react-native';
 import MView from '../../components/customize/MView';
 import Image from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
@@ -16,30 +16,56 @@ import { listProductAction } from '../../redux-saga/listProduct';
 
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../Utilities/MAsyncStorage';
+import Utilities from '../../Utilities/Utilities';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MShadowView from '../../components/customize/MShadowView';
 import HeaderCommon from '../../components/customize/HeaderCommon';
 import pencil from '../../assets/images/pencil.png';
-import { FlatList } from 'react-native-gesture-handler';
+import ModalProductDetail from '../../components/customize/ModalProductDetail';
+import ModalCart from '../../components/customize/\bModalCart';
+import { height, width } from '../../components/customize/config/constant';
 const ic_times = require('../../assets/icons/ic_times.png');
 const ic_search = require('../../assets/icons/ic_search.png');
+const mon_an = require('../../assets/images/mon_an.png');
+
 class Product extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			focus: false,
 			filter: {
-				status: {
+				sort: {
+					type: 'desc',
+					attr: ''
+				},
+				created_at: {
+					type: 'compare',
+					value: {
+						from: '',
+						to: ''
+					}
+				},
+				title: {
+					type: 'like',
+					value: ''
+				},
+				alias: {
 					type: '=',
-					value: '1'
+					value: []
 				},
 				search: '',
 				paging: {
 					perpage: 10,
 					page: 1
 				}
-			}
+			},
+			isHideModalProductDetail: true,
+			isVisibleModalProductDetail: false,
+			isHideModalCart: true,
+			isVisibleModalCart: false,
+			product: null
 		};
 	}
 	componentDidMount() {
@@ -53,6 +79,22 @@ class Product extends React.Component {
 	onRefresh = () => {
 		this.props.listProductAction(this.state.filter);
 	};
+	next_page = () => {
+		this.setState(
+			{
+				filter: {
+					...this.state.filter,
+					paging: {
+						...this.state.filter.paging,
+						page: this.state.filter.paging.page + 1
+					}
+				}
+			},
+			() => {
+				this.onRefresh();
+			}
+		);
+	};
 	_view_search() {
 		return (
 			<MShadowView style={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}>
@@ -60,8 +102,13 @@ class Product extends React.Component {
 					<Image source={ic_search} style={{ height: 18, width: 40 }} resizeMode="contain" />
 					<View style={{ flex: 1 }}>
 						<TextInput
-							placeholder={'Tìm sản phẩm'}
-							style={[ { borderColor: this.state.focus ? Style.primaryColor : '#F6F6F6' } ]}
+							placeholder={'Tìm kiếm sản phẩm'}
+							style={[
+								{
+									borderColor: this.state.focus ? Style.primaryColor : '#F6F6F6',
+									fontFamily: 'Poppins'
+								}
+							]}
 							onChangeText={(text) => {
 								this.setState({ filter: { ...this.state.filter, search: text } });
 							}}
@@ -97,19 +144,115 @@ class Product extends React.Component {
 			</MShadowView>
 		);
 	}
+	openProductDetail = (product) => () => {
+		this.setState({ isVisibleModalProductDetail: true, product });
+	};
+	goCart = () => {
+		this.props.navigation.navigate('Cart');
+	};
+	view_item = (item, index) => {
+		return (
+			<MShadowView style={{}}>
+				<TouchableOpacity
+					style={{
+						flexDirection: 'row',
+						paddingHorizontal: Config.PADDING_HORIZONTAL,
+						paddingVertical: Config.PADDING_VERTICAL
+					}}
+					onPress={this.openProductDetail(item)}
+				>
+					<View style={{ flex: 1 }}>
+						<Image source={mon_an} style={{ height: 80 }} resizeMode="contain" />
+					</View>
+					<View style={{ flex: 1, paddingHorizontal: 10 }}>
+						<TextPoppin style={styles.title}>{item.name}</TextPoppin>
+					</View>
+					<View style={{ flex: 1 }}>
+						<TextPoppin style={styles.text_price}>
+							{Utilities.instance().add_dot_number(item.price)}
+						</TextPoppin>
+					</View>
+				</TouchableOpacity>
+			</MShadowView>
+		);
+	};
 	render = () => {
 		return (
 			<MView statusbarColor={'white'}>
 				<HeaderCommon title="Sản phẩm đang bán" disableLeft actionLeft={this.props.navigation.goBack} />
-				{this._view_search()}
-				<KeyboardAwareScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-					<FlatList data={this.props.listProductReducer.data} />
+				<KeyboardAwareScrollView
+					style={{ flex: 1 }}
+					contentContainerStyle={{ flex: 1 }}
+					keyboardShouldPersistTaps="handled"
+				>
+					{this._view_search()}
+					<View style={{ flex: 1, height: height, width: width }}>
+						<FlatList
+							initialNumToRender={10}
+							maxToRenderPerBatch={10}
+							windowSize={10}
+							legacyImplementation={false}
+							updateCellsBatchingPeriod={50}
+							refreshing={this.props.listProductReducer.isLoading}
+							onRefresh={this.onRefresh}
+							data={this.props.listProductReducer.data.list}
+							extraData={this.props.listProductReducer.data}
+							keyExtractor={(item, index) => index + ''}
+							ListEmptyComponent={
+								<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
+									Không có dữ liệu
+								</TextPoppin>
+							}
+							onScrollBeginDrag={() => {
+								this.setState({ scroll: true });
+							}}
+							onEndReachedThreshold={0.2}
+							onEndReached={({ distanceFromEnd }) => {
+								if (this.props.listProductReducer.canLoadMore) {
+									this.next_page();
+								}
+							}}
+							renderItem={({ item, index }) => {
+								return this.view_item(item, index);
+							}}
+						/>
+						<TouchableOpacity
+							onPress={this.goCart}
+							style={{
+								position: 'absolute',
+								bottom: 10,
+								left: 10,
+								right: 10,
+								marginTop: 20,
+								justifyContent: 'center',
+								alignItems: 'center',
+								height: 50,
+								borderRadius: 5,
+								backgroundColor: Style.primaryColor,
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								paddingHorizontal: 15
+							}}
+						>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>Xem giỏ hàng</TextPoppin>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>1 món</TextPoppin>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>100000</TextPoppin>
+						</TouchableOpacity>
+					</View>
+					<ModalProductDetail
+						action_on_hide={() => this.setState({ isHideModalProductDetail: true })}
+						action_on_show={() => this.setState({ isHideModalProductDetail: false })}
+						action_cancel={() => this.setState({ isVisibleModalProductDetail: false })}
+						isModalVisible={this.state.isVisibleModalProductDetail && this.state.isHideModalCart}
+						product={this.state.product}
+					/>
+
+					<MAlert
+						ref={(ref) => {
+							this.alert = ref;
+						}}
+					/>
 				</KeyboardAwareScrollView>
-				<MAlert
-					ref={(ref) => {
-						this.alert = ref;
-					}}
-				/>
 			</MView>
 		);
 	};
@@ -142,12 +285,23 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%'
 	},
-	title: {
+	text_content: {
 		fontSize: Style.fontSize,
 		fontWeight: Config.os == 2 ? 'bold' : '500',
 		color: '#3f3f3f',
 		marginTop: 30,
 		marginBottom: Config.os == 2 ? 5 : 1
+	},
+	title: {
+		fontSize: Style.fontSize,
+		color: '#3f3f3f',
+		fontWeight: Config.os == 2 ? 'bold' : '500'
+	},
+	text_price: {
+		fontSize: Style.fontSize,
+		color: 'black',
+		fontWeight: Config.os == 2 ? 'bold' : '500',
+		textAlign: 'right'
 	},
 	text_input: {
 		width: '100%',

@@ -4,11 +4,13 @@ export const LIST_PRODUCT_ERROR = 'LIST_PRODUCT_ERROR';
 import { put } from 'redux-saga/effects';
 import { Services } from '../services/Services';
 import MAsyncStorage from '../Utilities/MAsyncStorage';
-import { execute, Method } from '../services/Services';
-export const listProductAction = (body) => {
+import { api } from '../services/Services';
+import qs from 'qs';
+
+export const listProductAction = (filter) => {
 	return {
 		type: LIST_PRODUCT,
-		body
+		filter
 	};
 };
 const defaultGetFormData = {
@@ -16,7 +18,9 @@ const defaultGetFormData = {
 	isSuccess: false,
 	isError: false,
 	canLoadMore: true,
-	data: []
+	data: {
+		list: []
+	}
 };
 export const listProductReducer = (state = defaultGetFormData, action) => {
 	switch (action.type) {
@@ -38,21 +42,26 @@ export const listProductReducer = (state = defaultGetFormData, action) => {
 			};
 		case LIST_PRODUCT:
 			return {
-				data: {},
+				data: {
+					list: []
+				},
 				isLoading: true
 			};
 		default:
 			return defaultGetFormData;
 	}
 };
-export function* listProductService(body) {
-	return yield execute('/product/list', Method.get, {
-		...body
+export function* listProductService(filter) {
+	return yield api.get(`/product/list`, {
+		params: { ...filter },
+		paramsSerializer: (params) => {
+			return qs.stringify(params, { arrayFormat: 'repeat' });
+		}
 	});
 }
 export function* listProductSaga(action) {
 	try {
-		const response = yield listProductService(action.body);
+		const response = yield listProductService(action.filter);
 		console.log('listProductSaga', response);
 		if (response.status === 200) {
 			if (response.data.status === 'success') {

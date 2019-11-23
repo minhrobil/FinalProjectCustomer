@@ -3,9 +3,32 @@ import apisauce from 'apisauce';
 import { Endpoint } from './EndPoint';
 import { Constant } from '../Utilities/Constant';
 import { NavigationActions, StackActions } from 'react-navigation';
+import axios from 'axios';
 
-const BASE_API = 'https://api2.mecash.vn/';
+const BASE_API = 'http://18.138.58.252/FinalProjectAPI/';
+export const api = axios.create({
+	baseURL: BASE_API,
+	timeout: 10000,
+	headers: {
+		'Content-Type': 'application/json',
+		Accept: 'application/json'
+	}
+});
 
+api.interceptors.request.use(
+	async (config) => {
+		const user = await MAsyncStorage.getUserInfo();
+
+		if (user && user.token) {
+			config.headers.common['Authorization'] = 'Bearer ' + user.token;
+		}
+		return config;
+	},
+	function(error) {
+		// Do something with request error
+		return Promise.reject(error);
+	}
+);
 export const Method = {
 	GET: 'GET',
 	PUT: 'PUT',

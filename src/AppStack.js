@@ -12,6 +12,7 @@ import Account from './modules/main/Account';
 import AccountEdit from './modules/main/AccountEdit';
 import ChangePass from './modules/main/ChangePass';
 import Product from './modules/main/Product';
+import Cart from './modules/main/Cart';
 
 import SMSValidation from './modules/initial/login/SMSValidation';
 import SigninScreen from './modules/initial/login/SigninScreen';
@@ -102,6 +103,9 @@ const routeStack = createStackNavigator(
 		},
 		Product: {
 			screen: Product
+		},
+		Cart: {
+			screen: Cart
 		}
 	},
 	{
