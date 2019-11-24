@@ -14,6 +14,9 @@ import ChangePass from './modules/main/ChangePass';
 import Product from './modules/main/Product';
 import Cart from './modules/main/Cart';
 import Orders from './modules/main/Orders';
+import CreateProduct from './modules/main/CreateProduct';
+import ProductAdmin from './modules/main/ProductAdmin';
+import EditProduct from './modules/main/EditProduct';
 
 import AutocompleteAddress from './modules/main/AutocompleteAddress';
 
@@ -80,10 +83,64 @@ const TabMain = createBottomTabNavigator(
 		}
 	}
 );
+
+const TabMainAdmin = createBottomTabNavigator(
+	{
+		// order: { screen: Deliveries },
+		// map: { screen: MapScreen },
+		ProductAdmin: { screen: ProductAdmin },
+		CreateProduct: { screen: CreateProduct },
+		account: { screen: Account }
+	},
+	{
+		defaultNavigationOptions: ({ navigation }) => ({
+			tabBarIcon: ({ focused, tintColor }) => {
+				const { routeName } = navigation.state;
+				if (routeName === 'ProductAdmin') {
+					return (
+						<FastImage
+							resizeMode={FastImage.resizeMode.contain}
+							style={styles.icon}
+							tintColor={focused ? Styles.primaryColor : '#7f7f7f'}
+							source={require('./assets/images/vehicle.png')}
+						/>
+					);
+				} else if (routeName === 'CreateProduct') {
+					return (
+						<FastImage
+							resizeMode={FastImage.resizeMode.contain}
+							style={styles.icon}
+							tintColor={focused ? Styles.primaryColor : null}
+							source={require('./assets/images/map.png')}
+						/>
+					);
+				} else if (routeName === 'account') {
+					return (
+						<FastImage
+							resizeMode={FastImage.resizeMode.contain}
+							style={styles.icon}
+							tintColor={focused ? Styles.primaryColor : '#7f7f7f'}
+							source={require('./assets/images/user.png')}
+						/>
+					);
+				}
+				return <Ionicons name={'home'} size={25} color={tintColor} />;
+			}
+		}),
+		tabBarOptions: {
+			activeTintColor: '#EE5723',
+			inactiveTintColor: 'gray',
+			showLabel: false
+		}
+	}
+);
 const routeStack = createStackNavigator(
 	{
 		main: {
 			screen: TabMain
+		},
+		mainAdmin: {
+			screen: TabMainAdmin
 		},
 		splash: {
 			screen: SplashScreen
@@ -114,6 +171,9 @@ const routeStack = createStackNavigator(
 		},
 		AutocompleteAddress: {
 			screen: AutocompleteAddress
+		},
+		EditProduct: {
+			screen: EditProduct
 		}
 	},
 	{

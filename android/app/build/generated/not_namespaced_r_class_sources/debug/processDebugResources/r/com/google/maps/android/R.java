@@ -154,9 +154,9 @@ public final class R {
     public static final class style {
         private style() {}
 
-        public static final int amu_Bubble_TextAppearance_Dark = 0x7f0d019e;
-        public static final int amu_Bubble_TextAppearance_Light = 0x7f0d019f;
-        public static final int amu_ClusterIcon_TextAppearance = 0x7f0d01a0;
+        public static final int amu_Bubble_TextAppearance_Dark = 0x7f0d019f;
+        public static final int amu_Bubble_TextAppearance_Light = 0x7f0d01a0;
+        public static final int amu_ClusterIcon_TextAppearance = 0x7f0d01a1;
     }
     public static final class styleable {
         private styleable() {}

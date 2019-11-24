@@ -30,7 +30,7 @@ import { height, width } from '../../components/customize/config/constant';
 import OneLine from '../../components/customize/OneLine';
 const ic_times = require('../../assets/icons/ic_times.png');
 const ic_search = require('../../assets/icons/ic_search.png');
-const mon_an = require('../../assets/images/mon_an.jpg');
+const mon_an = require('../../assets/images/mon_an.jpeg');
 
 class AutocompleteAddress extends React.Component {
 	constructor(props) {

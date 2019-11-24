@@ -249,7 +249,7 @@ class Cart extends React.Component {
 											<Icon name="pencil-alt" size={20} color={Styles.primaryColor} />
 										</TouchableOpacity>
 										<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-											{Utilities.instance().add_dot_number(item.product.price)}
+											{Utilities.instance().add_dot_number(item.product.price)} đ
 										</TextPoppin>
 									</View>
 									{item.note ? (
@@ -293,7 +293,8 @@ class Cart extends React.Component {
 								<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
 									{Utilities.instance().add_dot_number(
 										this.count_total_price_cart(this.props.cartLocalReducer.data)
-									)}
+									)}{' '}
+									đ
 								</TextPoppin>
 							</View>
 						) : null}
@@ -344,7 +345,8 @@ class Cart extends React.Component {
 						<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
 							{Utilities.instance().add_dot_number(
 								this.count_total_price_cart(this.props.cartLocalReducer.data)
-							)}
+							)}{' '}
+							đ
 						</TextPoppin>
 					</View>
 					<TouchableOpacity

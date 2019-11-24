@@ -53,7 +53,11 @@ class LoginScreen extends React.Component {
 		} else {
 			if (loginRes.isSuccess) {
 				this.props.setUserInfoAction(loginRes.data);
-				this.startMain();
+				if (loginRes.data.user.role_id == 1) {
+					this.startMainAdmin();
+				} else {
+					this.startMain();
+				}
 			}
 		}
 	}
@@ -62,6 +66,14 @@ class LoginScreen extends React.Component {
 			StackActions.reset({
 				index: 0,
 				actions: [ NavigationActions.navigate({ routeName: 'main' }) ]
+			})
+		);
+	};
+	startMainAdmin = () => {
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [ NavigationActions.navigate({ routeName: 'mainAdmin' }) ]
 			})
 		);
 	};

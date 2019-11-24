@@ -23,7 +23,7 @@ import right_icon from '../../assets/images/right_icon.png';
 import top_icon from '../../assets/images/top_icon.png';
 import Utilities from '../../Utilities/Utilities';
 import { height, width } from '../../components/customize/config/constant';
-const mon_an = require('../../assets/images/mon_an.jpg');
+const mon_an = require('../../assets/images/mon_an.jpeg');
 
 class Item extends React.Component {
 	constructor(props) {
@@ -137,7 +137,6 @@ class Deliveries extends React.Component {
 				}
 			}
 		};
-		console.log(this.props.navigation.state.params);
 	}
 	onChangeTab = (tab) => () => {
 		this.setState({
@@ -149,10 +148,8 @@ class Deliveries extends React.Component {
 	}
 
 	componentDidUpdate(PrevProps) {
-		if (this.props.navigation.state.params.onRefresh != PrevProps.navigation.state.params.onRefresh) {
-			if (this.props.navigation.state.params.onRefresh) {
-				this.onRefresh();
-			}
+		if (this.props.createOrderReducer != PrevProps.createOrderReducer) {
+			this.onRefresh();
 		}
 	}
 
@@ -276,6 +273,10 @@ class Deliveries extends React.Component {
 		}
 	};
 	view_item = (item, index) => {
+		console.log(
+			item.products[0].images && item.products[0].images[0] ? { uri: item.products[0].images[0] } : mon_an
+		);
+
 		return (
 			<MShadowView style={{}}>
 				<TouchableOpacity
@@ -288,7 +289,13 @@ class Deliveries extends React.Component {
 				>
 					<View style={{ justifyContent: 'space-between', alignItems: 'center' }}>
 						<FastImage
-							source={mon_an}
+							source={
+								item.products[0].product.images && item.products[0].product.images[0] ? (
+									{ uri: item.products[0].product.images[0] }
+								) : (
+									mon_an
+								)
+							}
 							style={{ height: 68, width: 68, borderRadius: 80 }}
 							resizeMode="stretch"
 						/>
@@ -348,7 +355,6 @@ class Deliveries extends React.Component {
 		var total = cart.reduce((sum, item) => sum + item.quantity, 0);
 		return total;
 	};
-	componentDidUpdate(PrevProps) {}
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
@@ -432,6 +438,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
+		createOrderReducer: state.createOrderReducer,
 		userInfoReducer: state.userInfoReducer,
 		listOrderPendingReducer: state.listOrderPendingReducer
 	};

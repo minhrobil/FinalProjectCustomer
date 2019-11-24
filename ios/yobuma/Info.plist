@@ -37,8 +37,24 @@
 			</dict>
 		</dict>
 	</dict>
+	
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Yobuma sử dụng mạng bluetooth của bạn để chia sẻ thông tin</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Yobuma sử dụng calendar của bạn để thiết lập lịch</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Yobuma sử dụng camera của bạn để đăng ảnh vào hồ sơ cá nhân</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Yobuma sử dụng tọa độ của bạn để xác định nội dung hiển thị phù hợp với bạn</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Yobuma sử dụng tọa độ của bạn để xác định nội dung hiển thị phù hợp với bạn</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Yobuma sử dụng tọa độ của bạn để xác định nội dung hiển thị phù hợp với bạn</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Yobuma sử dụng tọa độ của bạn để xác định nội dung hiển thị phù hợp với bạn</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Yobuma sử dụng gallery của bạn để đăng ảnh vào hồ sơ cá nhân</string>
+	
 	<key>UIAppFonts</key>
 	<array>
 		<string>GreatVibes-Regular.otf</string>

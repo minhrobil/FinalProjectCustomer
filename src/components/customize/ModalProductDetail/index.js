@@ -17,7 +17,7 @@ import { Config } from '../../../Utilities/Config';
 import { setCartLocalAction, deleteCartLocalAction } from '../../../redux-saga/cartLocal';
 
 const ic_times = require('../../../assets/icons/ic_times.png');
-const mon_an = require('../../../assets/images/mon_an.jpg');
+const mon_an = require('../../../assets/images/mon_an.jpeg');
 import { connect } from 'react-redux';
 
 class ModalProductDetail extends Component {
@@ -163,7 +163,13 @@ class ModalProductDetail extends Component {
 									<Image source={ic_times} style={{ height: 60, width: 40 }} resizeMode="contain" />
 								</TouchableOpacity>
 								<Image
-									source={mon_an}
+									source={
+										this.state.product.images && this.state.product.images[0] ? (
+											{ uri: this.state.product.images[0] }
+										) : (
+											mon_an
+										)
+									}
 									style={{ height: width * 0.6, width: width }}
 									resizeMode="stretch"
 								/>
@@ -175,7 +181,7 @@ class ModalProductDetail extends Component {
 									</View>
 									<View style={{ flex: 1 }}>
 										<TextPoppin style={[ styles.title, { fontSize: 22, textAlign: 'right' } ]}>
-											{Utilities.instance().add_dot_number(this.state.product.price)}
+											{Utilities.instance().add_dot_number(this.state.product.price)} đ
 										</TextPoppin>
 									</View>
 								</View>

@@ -46,6 +46,8 @@ import { autocompleteAddressSaga, AUTOCOMPLETE_ADDRESS } from './autocompleteAdd
 import { setCartLocalSaga, SET_CART_LOCAL, deleteCartLocalSaga, DELETE_CART_LOCAL } from './cartLocal';
 import { createOrderSaga, CREATE_ORDER } from './createOrder';
 import { listOrderPendingSaga, LIST_ORDER_PENDING } from './listOrderPending';
+import { createProductSaga, CREATE_PRODUCT } from './createProduct';
+import { deleteProductSaga, DELETE_PRODUCT } from './deleteProduct';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -195,6 +197,10 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(DELETE_PRODUCT, deleteProductSaga);
+
+	yield takeLatest(CREATE_PRODUCT, createProductSaga);
+
 	yield takeLatest(LIST_ORDER_PENDING, listOrderPendingSaga);
 
 	yield takeLatest(CREATE_ORDER, createOrderSaga);

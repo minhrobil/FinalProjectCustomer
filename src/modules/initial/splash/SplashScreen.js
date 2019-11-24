@@ -38,7 +38,11 @@ class SplashScreen extends React.Component {
 	componentDidUpdate(PrevProps) {
 		if (this.props.checkTokenReducer != PrevProps.checkTokenReducer) {
 			if (this.props.checkTokenReducer.isSuccess) {
-				this._goMain();
+				if (this.props.checkTokenReducer.data.user.role_id == 1) {
+					this.startMainAdmin();
+				} else {
+					this._goMain();
+				}
 				this.props.setUserInfoAction(this.props.checkTokenReducer.data);
 				MAsyncStorage.setUserInfo(this.props.checkTokenReducer.data);
 			}
@@ -47,6 +51,15 @@ class SplashScreen extends React.Component {
 			}
 		}
 	}
+
+	startMainAdmin = () => {
+		this.props.navigation.dispatch(
+			StackActions.reset({
+				index: 0,
+				actions: [ NavigationActions.navigate({ routeName: 'mainAdmin' }) ]
+			})
+		);
+	};
 	componentDidMount() {
 		this.checkUserInfo();
 		// this.checkCodePushFinish();

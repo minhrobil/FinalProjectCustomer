@@ -28,7 +28,7 @@ import ModalCart from '../../components/customize/\bModalCart';
 import { height, width } from '../../components/customize/config/constant';
 const ic_times = require('../../assets/icons/ic_times.png');
 const ic_search = require('../../assets/icons/ic_search.png');
-const mon_an = require('../../assets/images/mon_an.jpg');
+const mon_an = require('../../assets/images/mon_an.jpeg');
 
 class Product extends React.Component {
 	constructor(props) {
@@ -188,14 +188,18 @@ class Product extends React.Component {
 					onPress={this.openProductDetail(item)}
 				>
 					<View style={{ flex: 1 }}>
-						<Image source={mon_an} style={{ height: 80 }} resizeMode="contain" />
+						<Image
+							source={item.images && item.images[0] ? { uri: item.images[0] } : mon_an}
+							style={{ height: 80, width: 100 }}
+							resizeMode="contain"
+						/>
 					</View>
 					<View style={{ flex: 1, paddingHorizontal: 10 }}>
 						<TextPoppin style={styles.title}>{item.name}</TextPoppin>
 					</View>
 					<View style={{ flex: 1 }}>
 						<TextPoppin style={styles.text_price}>
-							{Utilities.instance().add_dot_number(item.price)}
+							{Utilities.instance().add_dot_number(item.price)} đ
 						</TextPoppin>
 						{quantity > 0 && (
 							<TextPoppin style={[ styles.text_price, { color: Style.primaryColor } ]}>
@@ -302,7 +306,8 @@ class Product extends React.Component {
 							<TextPoppin style={[ styles.title, { color: 'white' } ]}>
 								{Utilities.instance().add_dot_number(
 									this.count_total_price_cart(this.props.cartLocalReducer.data)
-								)}
+								)}{' '}
+								đ
 							</TextPoppin>
 						</TouchableOpacity>
 					) : null}

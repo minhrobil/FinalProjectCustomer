@@ -44,6 +44,8 @@ import { autocompleteAddressReducer } from './autocompleteAddress';
 import { cartLocalReducer } from './cartLocal';
 import { createOrderReducer } from './createOrder';
 import { listOrderPendingReducer } from './listOrderPending';
+import { createProductReducer } from './createProduct';
+import { deleteProductReducer } from './deleteProduct';
 
 const defaultGetFormData = {
 	isLoading: false,
@@ -248,6 +250,8 @@ const GetContracts = (state = defaultGetFormData, action) => {
 };
 
 const reducer = combineReducers({
+	deleteProductReducer,
+	createProductReducer,
 	listOrderPendingReducer,
 	createOrderReducer,
 	cartLocalReducer,

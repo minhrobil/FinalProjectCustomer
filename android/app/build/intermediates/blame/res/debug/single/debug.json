@@ -740,6 +740,10 @@
         "source": "/Users/tima/.gradle/caches/transforms-2/files-2.1/7a92f32ef9b3b6f13fe401e6c7d88872/res/drawable-mdpi-v4/notification_bg_normal.9.png"
     },
     {
+        "merged": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/res/merged/debug/layout_list_item.xml.flat",
+        "source": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/node_modules/react-native-image-picker/android/build/intermediates/packaged_res/debug/layout/list_item.xml"
+    },
+    {
         "merged": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_cab_background_top_mtrl_alpha.9.png.flat",
         "source": "/Users/tima/.gradle/caches/transforms-2/files-2.1/26a68d5c6d393c7ece7bb9fd06729919/res/drawable-hdpi-v4/abc_cab_background_top_mtrl_alpha.9.png"
     },
@@ -1842,6 +1846,10 @@
     {
         "merged": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_abc_ic_menu_paste_mtrl_am_alpha.png.flat",
         "source": "/Users/tima/.gradle/caches/transforms-2/files-2.1/26a68d5c6d393c7ece7bb9fd06729919/res/drawable-xhdpi-v4/abc_ic_menu_paste_mtrl_am_alpha.png"
+    },
+    {
+        "merged": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/res/merged/debug/xml_provider_paths.xml.flat",
+        "source": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/node_modules/react-native-image-picker/android/build/intermediates/packaged_res/debug/xml/provider_paths.xml"
     },
     {
         "merged": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/res/merged/debug/drawable_abc_list_selector_holo_dark.xml.flat",
