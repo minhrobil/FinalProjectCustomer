@@ -63,10 +63,14 @@ class Cart extends React.Component {
 		}
 		if (PrevProps.createOrderReducer != this.props.createOrderReducer) {
 			if (this.props.createOrderReducer.isSuccess) {
-				this.props.deleteCartLocalAction();
-				this.props.checkTokenAction();
-				this.props.navigation.goBack();
-				this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Orders' }));
+				this.alert.showAlert(this.props.createOrderReducer.message, () => {
+					this.props.deleteCartLocalAction();
+					this.props.checkTokenAction();
+					this.props.navigation.goBack();
+					this.props.navigation.dispatch(
+						NavigationActions.navigate({ routeName: 'orders', params: { onRefresh: true } })
+					);
+				});
 			} else {
 				this.alert.showAlert(this.props.createOrderReducer.message, () => {});
 			}
@@ -142,16 +146,24 @@ class Cart extends React.Component {
 			} else if (this.state.customer_phone == '') {
 				this.alert.showAlert(`Số điện thoại người nhận không được để trống`, () => {});
 			} else {
-				var data = {
-					customer_name: this.state.customer_name,
-					customer_phone: this.state.customer_phone,
-					customer_address: this.state.customer_address,
-					customer_latitude: this.state.customer_latitude,
-					customer_longitude: this.state.customer_longitude,
-					products: JSON.stringify(this.props.cartLocalReducer.data)
-				};
-				console.log(data);
-				this.props.createOrderAction(data);
+				this.alert.showAlert(
+					`Bạn có chắc chắn thông tin đặt hàng đã đúng? Đơn hàng sẽ được đặt ngay bây giờ?`,
+					() => {
+						var data = {
+							customer_name: this.state.customer_name,
+							customer_phone: this.state.customer_phone,
+							customer_address: this.state.customer_address,
+							customer_latitude: this.state.customer_latitude,
+							customer_longitude: this.state.customer_longitude,
+							products: JSON.stringify(this.props.cartLocalReducer.data)
+						};
+						console.log(data);
+						setTimeout(() => {
+							this.props.createOrderAction(data);
+						}, 1000);
+					},
+					() => {}
+				);
 			}
 		} else {
 			this.alert.showAlert(
@@ -179,8 +191,12 @@ class Cart extends React.Component {
 		});
 	};
 	count_total_price_cart = (cart) => {
-		var total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-		return total;
+		if (cart) {
+			var total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+			return total;
+		} else {
+			return 0;
+		}
 	};
 	render() {
 		return (
@@ -341,7 +357,11 @@ class Cart extends React.Component {
 						}}
 						onPress={this._submit}
 					>
-						<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
+						{this.props.createOrderReducer.isLoading ? (
+							<ActivityIndicator size="large" color={Styles.primaryColor} />
+						) : (
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
+						)}
 					</TouchableOpacity>
 				</View>
 				<ModalProductDetail

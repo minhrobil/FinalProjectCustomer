@@ -13,7 +13,7 @@ import MAlert from '../../components/customize/MAlert';
 import { listOrderPendingAction } from '../../redux-saga/listOrderPending';
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../Utilities/MAsyncStorage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MShadowView from '../../components/customize/MShadowView';
 import HeaderCommon from '../../components/customize/HeaderCommon';
@@ -137,6 +137,7 @@ class Deliveries extends React.Component {
 				}
 			}
 		};
+		console.log(this.props.navigation.state.params);
 	}
 	onChangeTab = (tab) => () => {
 		this.setState({
@@ -147,7 +148,13 @@ class Deliveries extends React.Component {
 		this.onRefresh();
 	}
 
-	componentDidUpdate(PrevProps) {}
+	componentDidUpdate(PrevProps) {
+		if (this.props.navigation.state.params.onRefresh != PrevProps.navigation.state.params.onRefresh) {
+			if (this.props.navigation.state.params.onRefresh) {
+				this.onRefresh();
+			}
+		}
+	}
 
 	onRefresh = () => {
 		this.props.listOrderPendingAction(this.state.filter);
@@ -185,6 +192,89 @@ class Deliveries extends React.Component {
 		);
 	};
 	openOrderDetail = (product) => () => {};
+	view_status = (status_id) => {
+		if (status_id == 1 || status_id == 2) {
+			return (
+				<TextPoppin
+					style={[
+						styles.content_value,
+						{
+							backgroundColor: '#D9C500',
+							color: 'white',
+							width: 100,
+							textAlign: 'center',
+							paddingVertical: 5,
+							marginTop: 5,
+							fontSize: 13,
+							borderRadius: 5
+						}
+					]}
+				>
+					Đang xử lý
+				</TextPoppin>
+			);
+		} else if (status_id == 3 || status_id == 4 || status_id == 5) {
+			return (
+				<TextPoppin
+					style={[
+						styles.content_value,
+						{
+							backgroundColor: Style.primaryColor,
+							color: 'white',
+							width: 100,
+							textAlign: 'center',
+							paddingVertical: 5,
+							marginTop: 5,
+							fontSize: 13,
+							borderRadius: 5
+						}
+					]}
+				>
+					Đang giao
+				</TextPoppin>
+			);
+		} else if (status_id == 6) {
+			return (
+				<TextPoppin
+					style={[
+						styles.content_value,
+						{
+							backgroundColor: Style.primaryColor,
+							color: 'white',
+							width: 100,
+							textAlign: 'center',
+							paddingVertical: 5,
+							marginTop: 5,
+							fontSize: 13,
+							borderRadius: 5
+						}
+					]}
+				>
+					Đã nhận hàng
+				</TextPoppin>
+			);
+		} else {
+			return (
+				<TextPoppin
+					style={[
+						styles.content_value,
+						{
+							backgroundColor: '#DB4A1C',
+							color: 'white',
+							width: 100,
+							textAlign: 'center',
+							paddingVertical: 5,
+							marginTop: 5,
+							fontSize: 13,
+							borderRadius: 5
+						}
+					]}
+				>
+					Đã hủy
+				</TextPoppin>
+			);
+		}
+	};
 	view_item = (item, index) => {
 		return (
 			<MShadowView style={{}}>
@@ -196,20 +286,60 @@ class Deliveries extends React.Component {
 					}}
 					onPress={this.openOrderDetail(item)}
 				>
-					<View style={{ flex: 1 }}>
-						<FastImage source={mon_an} style={{ height: 80 }} resizeMode="contain" />
+					<View style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+						<FastImage
+							source={mon_an}
+							style={{ height: 68, width: 68, borderRadius: 80 }}
+							resizeMode="stretch"
+						/>
+						{this.view_status(item.status_id)}
 					</View>
-					<View style={{ flex: 1, paddingHorizontal: 10 }}>
-						<TextPoppin style={styles.title}>
-							{this.count_total_quantity_cart(item.products)} món
-						</TextPoppin>
-						<TextPoppin style={styles.title}>{item.customer_address}</TextPoppin>
+					<View
+						style={{
+							flex: 1
+						}}
+					>
+						<View
+							style={{
+								flex: 1,
+								paddingLeft: 10,
+								alignItems: 'center',
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}
+						>
+							<TextPoppin style={styles.title}>
+								{this.count_total_quantity_cart(item.products)} món
+							</TextPoppin>
+							<Icon name="circle" size={5} />
+							<TextPoppin style={styles.title}>
+								{Utilities.instance().add_dot_number(item.total_price)} đ
+							</TextPoppin>
+						</View>
+						<View
+							style={{
+								flex: 1,
+								paddingLeft: 10,
+								alignItems: 'center',
+								flexDirection: 'row',
+								justifyContent: 'space-between'
+							}}
+						>
+							<TextPoppin style={styles.content_value}>{item.customer_address}</TextPoppin>
+						</View>
+						<View
+							style={{
+								flex: 1,
+								paddingLeft: 10
+							}}
+						>
+							<TextPoppin style={[ styles.content_value, { textAlign: 'right', fontStyle: 'italic' } ]}>
+								{Utilities.instance().dateDDMMYYYY(item.created_at)}
+							</TextPoppin>
+						</View>
 					</View>
-					<View style={{ flex: 1 }}>
-						<TextPoppin style={styles.text_price}>
-							{Utilities.instance().add_dot_number(item.total_price)}
-						</TextPoppin>
-					</View>
+
+					{/* <TextPoppin style={styles.title}>{item.customer_address}</TextPoppin> */}
 				</TouchableOpacity>
 			</MShadowView>
 		);
@@ -293,7 +423,7 @@ const styles = StyleSheet.create({
 		color: '#999999'
 	},
 	content_value: {
-		fontSize: Style.fontSize,
+		fontSize: Style.fontSize - 2,
 		// fontWeight: Config.os == 2 ? 'bold' : '600',
 		// textAlign: 'left',
 		color: '#3f3f3f'
