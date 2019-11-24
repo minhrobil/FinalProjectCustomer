@@ -260,7 +260,7 @@ class Product extends React.Component {
 						legacyImplementation={false}
 						updateCellsBatchingPeriod={50}
 						data={this.props.listProductReducer.data.list}
-						extraData={this.props.listProductReducer.data}
+						extraData={this.props.listProductReducer.data.list}
 						keyExtractor={(item, index) => index + ''}
 						ListEmptyComponent={
 							<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>

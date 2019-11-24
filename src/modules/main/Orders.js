@@ -374,7 +374,7 @@ class Deliveries extends React.Component {
 							legacyImplementation={false}
 							updateCellsBatchingPeriod={50}
 							data={this.props.listOrderPendingReducer.data.list}
-							extraData={this.props.listOrderPendingReducer.data}
+							extraData={this.props.listOrderPendingReducer.data.list}
 							keyExtractor={(item, index) => index + ''}
 							ListEmptyComponent={
 								<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
