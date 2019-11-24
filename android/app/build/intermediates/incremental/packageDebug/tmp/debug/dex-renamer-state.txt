@@ -1,7 +1,0 @@
-#Mon Nov 25 02:39:28 ICT 2019
-base.0=/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/transforms/dexMerger/debug/0
-path.1=classes2.dex
-renamed.1=classes2.dex
-path.0=classes.dex
-renamed.0=classes.dex
-base.1=/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/transforms/dexMerger/debug/0

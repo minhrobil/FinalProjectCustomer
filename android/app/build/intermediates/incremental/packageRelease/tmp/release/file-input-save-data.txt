@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Nov 24 18:49:58 ICT 2019
+#Mon Nov 25 04:34:59 ICT 2019
 124.path=fonts/OpenSans-BoldItalic.ttf
 60.set=NATIVE_RESOURCE
 52.set=ASSET
