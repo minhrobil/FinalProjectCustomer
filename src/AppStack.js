@@ -13,6 +13,8 @@ import AccountEdit from './modules/main/AccountEdit';
 import ChangePass from './modules/main/ChangePass';
 import Product from './modules/main/Product';
 import Cart from './modules/main/Cart';
+import Orders from './modules/main/Orders';
+
 import AutocompleteAddress from './modules/main/AutocompleteAddress';
 
 import SMSValidation from './modules/initial/login/SMSValidation';
@@ -33,7 +35,7 @@ const TabMain = createBottomTabNavigator(
 		// order: { screen: Deliveries },
 		// map: { screen: MapScreen },
 		product: { screen: Product },
-		map: { screen: MapScreen },
+		orders: { screen: Orders },
 		account: { screen: Account }
 	},
 	{
@@ -49,7 +51,7 @@ const TabMain = createBottomTabNavigator(
 							source={require('./assets/images/vehicle.png')}
 						/>
 					);
-				} else if (routeName === 'map') {
+				} else if (routeName === 'orders') {
 					return (
 						<FastImage
 							resizeMode={FastImage.resizeMode.contain}

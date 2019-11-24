@@ -43,7 +43,9 @@ class AutocompleteAddress extends React.Component {
 			action: this.props.navigation.state.params ? this.props.navigation.state.params.action : () => {}
 		};
 	}
-	componentDidMount() {}
+	componentDidMount() {
+		this.props.autocompleteAddressAction(this.state.address);
+	}
 	getPlace = (id) => () => {
 		fetch(
 			'https://maps.googleapis.com/maps/api/place/details/json?&key=AIzaSyAX2PANITOz9OwOu1oaj3QGZGQelGywIyA&placeid=' +

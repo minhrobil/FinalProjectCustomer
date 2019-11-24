@@ -25,12 +25,19 @@ import Utilities from '../../Utilities/Utilities';
 import OneLine, { OneLineMedium } from '../../components/customize/OneLine';
 import { width, height } from '../../components/customize/config/constant';
 import { setCartLocalAction, deleteCartLocalAction } from '../../redux-saga/cartLocal';
+import ModalProductDetail from '../../components/customize/ModalProductDetail';
+import pencil from '../../assets/images/pencil.png';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 class Cart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			product: null,
+			isHideModalProductDetail: true,
+			isVisibleModalProductDetail: false,
 			customer_name: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user.name : '',
+			customer_phone: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user.phone : '',
 			customer_address:
 				this.props.userInfoReducer.data && this.props.userInfoReducer.data.user.address
 					? this.props.userInfoReducer.data.user.address
@@ -42,6 +49,7 @@ class Cart extends React.Component {
 			if (this.props.userInfoReducer.data) {
 				this.setState({
 					customer_name: this.props.userInfoReducer.data.user.name,
+					customer_phone: this.props.userInfoReducer.data.user.phone,
 					customer_address: this.props.userInfoReducer.data.user.address
 						? this.props.userInfoReducer.data.user.address
 						: ''
@@ -52,6 +60,11 @@ class Cart extends React.Component {
 	onChangeCustomerName = (text) => {
 		this.setState({
 			customer_name: text
+		});
+	};
+	onChangeCustomerPhone = (text) => {
+		this.setState({
+			customer_phone: text
 		});
 	};
 	view_input_customer_name() {
@@ -68,7 +81,20 @@ class Cart extends React.Component {
 			</MShadowView>
 		);
 	}
-
+	view_input_customer_phone() {
+		return (
+			<MShadowView style={styles.view_search}>
+				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
+					<TextInput
+						value={this.state.customer_phone}
+						placeholder="Nhập số điện thoại"
+						onChangeText={this.onChangeCustomerPhone}
+						style={[ styles.text_input, { flex: 3 } ]}
+					/>
+				</View>
+			</MShadowView>
+		);
+	}
 	view_input_customer_address() {
 		return (
 			<MShadowView style={styles.view_search}>
@@ -98,6 +124,9 @@ class Cart extends React.Component {
 				() => {}
 			);
 		}
+	};
+	openProductDetail = (product) => () => {
+		this.setState({ isVisibleModalProductDetail: true, product });
 	};
 	goAutocompleteAddress = () => {
 		this.props.navigation.navigate('AutocompleteAddress', {
@@ -132,48 +161,70 @@ class Cart extends React.Component {
 					>
 						{this.props.cartLocalReducer.data ? (
 							this.props.cartLocalReducer.data.map((item, index) => (
-								<View
-									style={{
-										flexDirection: 'row',
-										padding: 10,
-										backgroundColor: 'white',
-										alignItems: 'center'
-									}}
-								>
+								<View>
 									<View
 										style={{
-											width: 40,
-											height: 40,
-											justifyContent: 'center',
-											alignItems: 'center',
-											borderWidth: 1,
-											borderRadius: 5,
-											borderColor: Styles.backgroundColorHome
+											flexDirection: 'row',
+											padding: 10,
+											backgroundColor: 'white',
+											alignItems: 'center'
 										}}
 									>
-										<TextPoppin style={[ styles.title, { color: Styles.primaryColor } ]}>
-											{item.quantity}x
+										<View
+											style={{
+												width: 40,
+												height: 40,
+												justifyContent: 'center',
+												alignItems: 'center',
+												borderWidth: 1,
+												borderRadius: 5,
+												borderColor: Styles.backgroundColorHome
+											}}
+										>
+											<TextPoppin style={[ styles.title, { color: Styles.primaryColor } ]}>
+												{item.quantity}x
+											</TextPoppin>
+										</View>
+										<View style={{ flex: 1, paddingHorizontal: 10 }}>
+											<TextPoppin style={[ styles.title, {} ]}>{item.product.name}</TextPoppin>
+										</View>
+										<TouchableOpacity
+											style={{ padding: 10 }}
+											onPress={this.openProductDetail(item)}
+										>
+											<Icon name="pencil-alt" size={20} color={Styles.primaryColor} />
+										</TouchableOpacity>
+										<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
+											{Utilities.instance().add_dot_number(item.product.price)}
 										</TextPoppin>
 									</View>
-									<View style={{ flex: 1, paddingHorizontal: 10 }}>
-										<TextPoppin style={[ styles.title, {} ]}>{item.product.name}</TextPoppin>
+									{item.note ? (
+										<View
+											style={{
+												flexDirection: 'row',
+												paddingLeft: 10,
+												backgroundColor: 'white',
+												alignItems: 'center'
+											}}
+										>
+											<TextPoppin style={[ styles.text_content, {} ]}>{item.note}</TextPoppin>
+										</View>
+									) : null}
+
+									<View
+										style={{
+											flexDirection: 'row',
+											padding: 10,
+											backgroundColor: 'white',
+											alignItems: 'center'
+										}}
+									>
+										<OneLine />
 									</View>
-									<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-										{Utilities.instance().add_dot_number(item.product.price)}
-									</TextPoppin>
 								</View>
 							))
 						) : null}
-						<View
-							style={{
-								flexDirection: 'row',
-								padding: 10,
-								backgroundColor: 'white',
-								alignItems: 'center'
-							}}
-						>
-							<OneLine />
-						</View>
+
 						<View
 							style={{
 								flexDirection: 'row',
@@ -207,6 +258,12 @@ class Cart extends React.Component {
 										<View style={{ flex: 3 }}>{this.view_input_customer_address()}</View>
 									</View>
 								</TouchableOpacity>
+								<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>
+									Số điện thoại người nhận *
+								</TextPoppin>
+								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+									<View style={{ flex: 3 }}>{this.view_input_customer_phone()}</View>
+								</View>
 							</View>
 						)}
 
@@ -248,6 +305,14 @@ class Cart extends React.Component {
 						<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
 					</TouchableOpacity>
 				</View>
+				<ModalProductDetail
+					action_on_hide={() => this.setState({ isHideModalProductDetail: true })}
+					action_on_show={() => this.setState({ isHideModalProductDetail: false })}
+					action_cancel={() => this.setState({ isVisibleModalProductDetail: false })}
+					isModalVisible={this.state.isVisibleModalProductDetail}
+					data={this.state.product}
+				/>
+
 				<MAlert
 					ref={(ref) => {
 						this.alert = ref;
@@ -281,6 +346,11 @@ const styles = StyleSheet.create({
 		fontWeight: Config.os == 2 ? 'bold' : '500',
 		color: '#3f3f3f',
 		marginBottom: Config.os == 2 ? 5 : 1
+	},
+	text_content: {
+		fontSize: Styles.fontSize - 1,
+		color: '#3f3f3f',
+		fontStyle: 'italic'
 	},
 	text_input: {
 		width: '100%',
