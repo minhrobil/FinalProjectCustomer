@@ -30,7 +30,9 @@ import { Styles } from './Utilities/Styles';
 
 const TabMain = createBottomTabNavigator(
 	{
-		order: { screen: Deliveries },
+		// order: { screen: Deliveries },
+		// map: { screen: MapScreen },
+		product: { screen: Product },
 		map: { screen: MapScreen },
 		account: { screen: Account }
 	},
@@ -38,7 +40,7 @@ const TabMain = createBottomTabNavigator(
 		defaultNavigationOptions: ({ navigation }) => ({
 			tabBarIcon: ({ focused, tintColor }) => {
 				const { routeName } = navigation.state;
-				if (routeName === 'order') {
+				if (routeName === 'product') {
 					return (
 						<FastImage
 							resizeMode={FastImage.resizeMode.contain}

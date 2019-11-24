@@ -14,35 +14,89 @@ import MShadowView from '../MShadowView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Config } from '../../../Utilities/Config';
+import { setCartLocalAction, deleteCartLocalAction } from '../../../redux-saga/cartLocal';
+
 const ic_times = require('../../../assets/icons/ic_times.png');
 const mon_an = require('../../../assets/images/mon_an.png');
+import { connect } from 'react-redux';
 
 class ModalProductDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			select: '',
-			product: this.props.product,
-			note: '',
-			quantity: 1
+			product: this.props.data ? this.props.data.product : null,
+			note: this.props.data ? this.props.data.note : '',
+			quantity: this.props.data ? this.props.data.quantity : 1
 		};
 	}
 	componentDidUpdate(PrevProps) {
-		if (this.props.product !== PrevProps.product) {
-			if (this.props.product) {
-				console.log(this.props.product);
-
-				this.setState({ product: this.props.product });
+		if (this.props.data !== PrevProps.data) {
+			if (this.props.data) {
+				this.setState({
+					product: this.props.data.product,
+					note: this.props.data ? this.props.data.note : '',
+					quantity: this.props.data ? this.props.data.quantity : 1
+				});
 			}
 		}
 	}
+	updateCart = () => {
+		if (this.props.cartLocalReducer.data && this.props.cartLocalReducer.data.length > 0) {
+			var cart = [ ...this.props.cartLocalReducer.data ];
+			var isExist = false;
+			for (let i = 0; i < cart.length; i++) {
+				if (cart[i].product.id == this.state.product.id) {
+					if (this.state.quantity == 0) {
+						cart = cart.filter((item, index) => item.product.id != cart[i].product.id);
+						isExist = true;
+					} else {
+						cart[i].note = this.state.note;
+						cart[i].quantity = this.state.quantity;
+						isExist = true;
+					}
+				} else {
+					continue;
+				}
+			}
+			if (!isExist && !(this.props.quantity == 0)) {
+				data = {
+					product: this.state.product,
+					note: this.state.note,
+					quantity: this.state.quantity
+				};
+				cart.push(data);
+			}
+			if (cart.length == 0) {
+				this.props.deleteCartLocalAction();
+			} else {
+				this.props.setCartLocalAction(cart);
+			}
+		} else {
+			if (!(this.props.quantity == 0)) {
+				var cart = [];
+				var data = {
+					product: this.state.product,
+					note: this.state.note,
+					quantity: this.state.quantity
+				};
+				cart.push(data);
+				if (cart.length == 0) {
+					this.props.deleteCartLocalAction();
+				} else {
+					this.props.setCartLocalAction(cart);
+				}
+			}
+		}
+		this.props.action_cancel();
+	};
 	onChangeNote = (text) => {
 		this.setState({
 			note: text
 		});
 	};
 	spend_quantity = () => {
-		if (this.state.quantity > 1) {
+		if (this.state.quantity > 0) {
 			this.setState({ quantity: this.state.quantity - 1 });
 		}
 	};
@@ -55,8 +109,6 @@ class ModalProductDetail extends Component {
 	};
 	render() {
 		const { action_on_show, action_on_hide, isModalVisible, action_cancel } = this.props;
-		console.log(this.props.product);
-
 		return (
 			<Modal
 				propagateSwipe={true}
@@ -230,6 +282,7 @@ class ModalProductDetail extends Component {
 						borderRadius: 5,
 						backgroundColor: Styles.primaryColor
 					}}
+					onPress={this.updateCart}
 				>
 					<TextPoppin style={[ styles.title, { color: 'white' } ]}>Cập nhật giỏ hàng</TextPoppin>
 				</TouchableOpacity>
@@ -238,4 +291,10 @@ class ModalProductDetail extends Component {
 	}
 }
 
-export default ModalProductDetail;
+function mapStateToProps(state) {
+	return {
+		cartLocalReducer: state.cartLocalReducer
+	};
+}
+
+export default connect(mapStateToProps, { setCartLocalAction, deleteCartLocalAction })(ModalProductDetail);

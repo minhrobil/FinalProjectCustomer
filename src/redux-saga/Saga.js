@@ -43,6 +43,7 @@ import { checkTokenSaga, CHECK_TOKEN } from './checkToken';
 import { changePassSaga, CHANGE_PASS } from './changePass';
 import { listProductSaga, LIST_PRODUCT } from './listProduct';
 import { autocompleteAddressSaga, AUTOCOMPLETE_ADDRESS } from './autocompleteAddress';
+import { setCartLocalSaga, SET_CART_LOCAL, deleteCartLocalSaga, DELETE_CART_LOCAL } from './cartLocal';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -192,6 +193,10 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(DELETE_CART_LOCAL, deleteCartLocalSaga);
+
+	yield takeLatest(SET_CART_LOCAL, setCartLocalSaga);
+
 	yield takeLatest(AUTOCOMPLETE_ADDRESS, autocompleteAddressSaga);
 
 	yield takeLatest(LIST_PRODUCT, listProductSaga);

@@ -11,6 +11,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../../components/customize/MAlert';
 import { signupAction } from '../../../redux-saga/signup';
+import { setUserInfoAction } from '../../../redux-saga/userInfo';
+
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../../Utilities/MAsyncStorage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -90,6 +92,8 @@ class LoginScreen extends React.Component {
 			}
 			if (this.props.signupReducer.isSuccess) {
 				this.alert.showAlert(this.props.signupReducer.message, () => {
+					this.props.setUserInfoAction(this.props.signupReducer.data);
+
 					this.props.navigation.dispatch(
 						StackActions.reset({
 							index: 0,
@@ -333,4 +337,4 @@ function mapStateToProps(state) {
 	};
 }
 
-export default connect(mapStateToProps, { signupAction })(LoginScreen);
+export default connect(mapStateToProps, { signupAction, setUserInfoAction })(LoginScreen);

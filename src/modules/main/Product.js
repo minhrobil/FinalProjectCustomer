@@ -145,12 +145,38 @@ class Product extends React.Component {
 		);
 	}
 	openProductDetail = (product) => () => {
-		this.setState({ isVisibleModalProductDetail: true, product });
+		var product_ = {};
+		var isExist = false;
+		if (this.props.cartLocalReducer.data) {
+			for (let i = 0; i < this.props.cartLocalReducer.data.length; i++) {
+				if (product.id == this.props.cartLocalReducer.data[i].product.id) {
+					product_ = this.props.cartLocalReducer.data[i];
+					isExist = true;
+				} else {
+					continue;
+				}
+			}
+		}
+		if (!isExist) {
+			product_ = {
+				product,
+				quantity: 1,
+				note: ''
+			};
+		}
+		this.setState({ isVisibleModalProductDetail: true, product: product_ });
 	};
 	goCart = () => {
 		this.props.navigation.navigate('Cart');
 	};
 	view_item = (item, index) => {
+		var quantity = 0;
+		try {
+			quantity = this.quantity_product_in_cart(this.props.cartLocalReducer.data, item);
+		} catch (error) {
+			console.log(error);
+		}
+
 		return (
 			<MShadowView style={{}}>
 				<TouchableOpacity
@@ -171,15 +197,49 @@ class Product extends React.Component {
 						<TextPoppin style={styles.text_price}>
 							{Utilities.instance().add_dot_number(item.price)}
 						</TextPoppin>
+						{quantity > 0 && (
+							<TextPoppin style={[ styles.text_price, { color: Style.primaryColor } ]}>
+								x{this.quantity_product_in_cart(this.props.cartLocalReducer.data, item)}
+							</TextPoppin>
+						)}
 					</View>
 				</TouchableOpacity>
 			</MShadowView>
 		);
 	};
+	count_total_price_cart = (cart) => {
+		var total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+		return total;
+	};
+	count_total_quantity_cart = (cart) => {
+		var total = cart.reduce((sum, item) => sum + item.quantity, 0);
+		return total;
+	};
+	quantity_product_in_cart = (cart, product) => {
+		var quantity = 0;
+		if (this.props.cartLocalReducer.data) {
+			for (let i = 0; i < this.props.cartLocalReducer.data.length; i++) {
+				if (product.id == this.props.cartLocalReducer.data[i].product.id) {
+					quantity = this.props.cartLocalReducer.data[i].quantity;
+				} else {
+					continue;
+				}
+			}
+		}
+		return quantity;
+	};
 	render = () => {
 		return (
 			<MView2 statusbarColor={'white'}>
-				<HeaderCommon title="Sản phẩm đang bán" disableLeft actionLeft={this.props.navigation.goBack} />
+				<HeaderCommon
+					title="Sản phẩm đang bán"
+					disableLeft
+					actionRight={
+						!this.props.userInfoReducer.data ? (
+							() => this.props.navigation.navigate('LoginScreen', { isOrder: true })
+						) : null
+					}
+				/>
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
 					contentContainerStyle={{ flex: 1 }}
@@ -216,35 +276,43 @@ class Product extends React.Component {
 								return this.view_item(item, index);
 							}}
 						/>
-						<TouchableOpacity
-							onPress={this.goCart}
-							style={{
-								position: 'absolute',
-								bottom: 10,
-								left: 10,
-								right: 10,
-								marginTop: 20,
-								justifyContent: 'center',
-								alignItems: 'center',
-								height: 50,
-								borderRadius: 5,
-								backgroundColor: Style.primaryColor,
-								flexDirection: 'row',
-								justifyContent: 'space-between',
-								paddingHorizontal: 15
-							}}
-						>
-							<TextPoppin style={[ styles.title, { color: 'white' } ]}>Xem giỏ hàng</TextPoppin>
-							<TextPoppin style={[ styles.title, { color: 'white' } ]}>1 món</TextPoppin>
-							<TextPoppin style={[ styles.title, { color: 'white' } ]}>100000</TextPoppin>
-						</TouchableOpacity>
+						{this.props.cartLocalReducer.data ? (
+							<TouchableOpacity
+								onPress={this.goCart}
+								style={{
+									position: 'absolute',
+									bottom: 10,
+									left: 10,
+									right: 10,
+									marginTop: 20,
+									justifyContent: 'center',
+									alignItems: 'center',
+									height: 50,
+									borderRadius: 5,
+									backgroundColor: Style.primaryColor,
+									flexDirection: 'row',
+									justifyContent: 'space-between',
+									paddingHorizontal: 15
+								}}
+							>
+								<TextPoppin style={[ styles.title, { color: 'white' } ]}>Xem giỏ hàng</TextPoppin>
+								<TextPoppin style={[ styles.title, { color: 'white' } ]}>
+									{this.count_total_quantity_cart(this.props.cartLocalReducer.data)}
+								</TextPoppin>
+								<TextPoppin style={[ styles.title, { color: 'white' } ]}>
+									{Utilities.instance().add_dot_number(
+										this.count_total_price_cart(this.props.cartLocalReducer.data)
+									)}
+								</TextPoppin>
+							</TouchableOpacity>
+						) : null}
 					</View>
 					<ModalProductDetail
 						action_on_hide={() => this.setState({ isHideModalProductDetail: true })}
 						action_on_show={() => this.setState({ isHideModalProductDetail: false })}
 						action_cancel={() => this.setState({ isVisibleModalProductDetail: false })}
-						isModalVisible={this.state.isVisibleModalProductDetail && this.state.isHideModalCart}
-						product={this.state.product}
+						isModalVisible={this.state.isVisibleModalProductDetail}
+						data={this.state.product}
 					/>
 
 					<MAlert
@@ -261,7 +329,8 @@ class Product extends React.Component {
 function mapStateToProps(state) {
 	return {
 		userInfoReducer: state.userInfoReducer,
-		listProductReducer: state.listProductReducer
+		listProductReducer: state.listProductReducer,
+		cartLocalReducer: state.cartLocalReducer
 	};
 }
 

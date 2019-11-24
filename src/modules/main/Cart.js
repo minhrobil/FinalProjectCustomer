@@ -24,16 +24,31 @@ import HeaderCommon from '../../components/customize/HeaderCommon';
 import Utilities from '../../Utilities/Utilities';
 import OneLine, { OneLineMedium } from '../../components/customize/OneLine';
 import { width, height } from '../../components/customize/config/constant';
+import { setCartLocalAction, deleteCartLocalAction } from '../../redux-saga/cartLocal';
 
 class Cart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			customer_name: '',
-			customer_address: ''
+			customer_name: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user.name : '',
+			customer_address:
+				this.props.userInfoReducer.data && this.props.userInfoReducer.data.user.address
+					? this.props.userInfoReducer.data.user.address
+					: ''
 		};
 	}
-	componentDidUpdate(PrevProps) {}
+	componentDidUpdate(PrevProps) {
+		if (PrevProps.userInfoReducer != this.props.userInfoReducer) {
+			if (this.props.userInfoReducer.data) {
+				this.setState({
+					customer_name: this.props.userInfoReducer.data.user.name,
+					customer_address: this.props.userInfoReducer.data.user.address
+						? this.props.userInfoReducer.data.user.address
+						: ''
+				});
+			}
+		}
+	}
 	onChangeCustomerName = (text) => {
 		this.setState({
 			customer_name: text
@@ -73,14 +88,15 @@ class Cart extends React.Component {
 		);
 	}
 	_submit = () => {
-		if (this.state.username && this.state.password) {
-			this.props.login(this.state.username, this.state.password);
+		if (this.props.userInfoReducer.data) {
 		} else {
-			if (this.state.username == '') {
-				this.alert.showAlert(`Bạn phải nhập tài khoản`, () => {});
-			} else if (this.state.password == '') {
-				this.alert.showAlert(`Bạn phải nhập mật khẩu`, () => {});
-			}
+			this.alert.showAlert(
+				`Bạn cần đăng nhập để đặt hàng`,
+				() => {
+					this.props.navigation.navigate('LoginScreen', { isOrder: true });
+				},
+				() => {}
+			);
 		}
 	};
 	goAutocompleteAddress = () => {
@@ -95,7 +111,10 @@ class Cart extends React.Component {
 			}
 		});
 	};
-
+	count_total_price_cart = (cart) => {
+		var total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+		return total;
+	};
 	render() {
 		return (
 			<MView2 statusbarColor={'white'}>
@@ -111,72 +130,40 @@ class Cart extends React.Component {
 						style={{ flex: 1 }}
 						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL, flex: 1 }}
 					>
-						<View
-							style={{
-								flexDirection: 'row',
-								padding: 10,
-								backgroundColor: 'white',
-								alignItems: 'center'
-							}}
-						>
-							<View
-								style={{
-									width: 40,
-									height: 40,
-									justifyContent: 'center',
-									alignItems: 'center',
-									borderWidth: 1,
-									borderRadius: 5,
-									borderColor: Styles.backgroundColorHome
-								}}
-							>
-								<TextPoppin style={[ styles.title, { color: Styles.primaryColor } ]}>1x</TextPoppin>
-							</View>
-							<View style={{ flex: 1, paddingHorizontal: 10 }}>
-								<TextPoppin style={[ styles.title, {} ]}>Chân gà sả ớt</TextPoppin>
-							</View>
-							<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-								{Utilities.instance().add_dot_number(100000)}
-							</TextPoppin>
-						</View>
-						<View
-							style={{
-								flexDirection: 'row',
-								padding: 10,
-								backgroundColor: 'white',
-								alignItems: 'center'
-							}}
-						>
-							<OneLine />
-						</View>
-						<View
-							style={{
-								flexDirection: 'row',
-								padding: 10,
-								backgroundColor: 'white',
-								alignItems: 'center'
-							}}
-						>
-							<View
-								style={{
-									width: 40,
-									height: 40,
-									justifyContent: 'center',
-									alignItems: 'center',
-									borderWidth: 1,
-									borderRadius: 5,
-									borderColor: Styles.backgroundColorHome
-								}}
-							>
-								<TextPoppin style={[ styles.title, { color: Styles.primaryColor } ]}>1x</TextPoppin>
-							</View>
-							<View style={{ flex: 1, paddingHorizontal: 10 }}>
-								<TextPoppin style={[ styles.title, {} ]}>Chân gà sả ớt</TextPoppin>
-							</View>
-							<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-								{Utilities.instance().add_dot_number(100000)}
-							</TextPoppin>
-						</View>
+						{this.props.cartLocalReducer.data ? (
+							this.props.cartLocalReducer.data.map((item, index) => (
+								<View
+									style={{
+										flexDirection: 'row',
+										padding: 10,
+										backgroundColor: 'white',
+										alignItems: 'center'
+									}}
+								>
+									<View
+										style={{
+											width: 40,
+											height: 40,
+											justifyContent: 'center',
+											alignItems: 'center',
+											borderWidth: 1,
+											borderRadius: 5,
+											borderColor: Styles.backgroundColorHome
+										}}
+									>
+										<TextPoppin style={[ styles.title, { color: Styles.primaryColor } ]}>
+											{item.quantity}x
+										</TextPoppin>
+									</View>
+									<View style={{ flex: 1, paddingHorizontal: 10 }}>
+										<TextPoppin style={[ styles.title, {} ]}>{item.product.name}</TextPoppin>
+									</View>
+									<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
+										{Utilities.instance().add_dot_number(item.product.price)}
+									</TextPoppin>
+								</View>
+							))
+						) : null}
 						<View
 							style={{
 								flexDirection: 'row',
@@ -199,23 +186,30 @@ class Cart extends React.Component {
 								<TextPoppin style={[ styles.title, {} ]}>Tổng giá trị đơn hàng</TextPoppin>
 							</View>
 							<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-								{Utilities.instance().add_dot_number(100000)}
+								{Utilities.instance().add_dot_number(
+									this.count_total_price_cart(this.props.cartLocalReducer.data)
+								)}
 							</TextPoppin>
 						</View>
 						<OneLineMedium />
-						<View style={{ padding: Config.PADDING_HORIZONTAL, backgroundColor: 'white' }}>
-							<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>Tên người nhận *</TextPoppin>
-							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 3 }}>{this.view_input_customer_name()}</View>
-							</View>
-							<TouchableOpacity onPress={this.goAutocompleteAddress}>
-								<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>Địa chỉ nhận hàng *</TextPoppin>
-
+						{this.props.userInfoReducer.data && (
+							<View style={{ padding: Config.PADDING_HORIZONTAL, backgroundColor: 'white' }}>
+								<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>Tên người nhận *</TextPoppin>
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-									<View style={{ flex: 3 }}>{this.view_input_customer_address()}</View>
+									<View style={{ flex: 3 }}>{this.view_input_customer_name()}</View>
 								</View>
-							</TouchableOpacity>
-						</View>
+								<TouchableOpacity onPress={this.goAutocompleteAddress}>
+									<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>
+										Địa chỉ nhận hàng *
+									</TextPoppin>
+
+									<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
+										<View style={{ flex: 3 }}>{this.view_input_customer_address()}</View>
+									</View>
+								</TouchableOpacity>
+							</View>
+						)}
+
 						<OneLineMedium height={150} />
 					</ScrollView>
 				</KeyboardAwareScrollView>
@@ -236,7 +230,9 @@ class Cart extends React.Component {
 							<TextPoppin style={[ styles.title, {} ]}>Tổng cộng</TextPoppin>
 						</View>
 						<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-							{Utilities.instance().add_dot_number(100000)}
+							{Utilities.instance().add_dot_number(
+								this.count_total_price_cart(this.props.cartLocalReducer.data)
+							)}
 						</TextPoppin>
 					</View>
 					<TouchableOpacity
@@ -247,6 +243,7 @@ class Cart extends React.Component {
 							borderRadius: 5,
 							backgroundColor: Styles.primaryColor
 						}}
+						onPress={this._submit}
 					>
 						<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
 					</TouchableOpacity>
@@ -262,10 +259,13 @@ class Cart extends React.Component {
 }
 
 function mapStateToProps(state) {
-	return {};
+	return {
+		userInfoReducer: state.userInfoReducer,
+		cartLocalReducer: state.cartLocalReducer
+	};
 }
 
-export default connect(mapStateToProps, {})(Cart);
+export default connect(mapStateToProps, { setCartLocalAction, deleteCartLocalAction })(Cart);
 
 const styles = StyleSheet.create({
 	mview_submit: { borderRadius: 40 },

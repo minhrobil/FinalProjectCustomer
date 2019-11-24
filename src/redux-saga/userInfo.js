@@ -20,7 +20,7 @@ export const deleteUserInfoAction = () => {
 	};
 };
 const defaultGetFormData = {
-	data: {}
+	data: null
 };
 export const userInfoReducer = (state = defaultGetFormData, action) => {
 	switch (action.type) {
@@ -30,7 +30,7 @@ export const userInfoReducer = (state = defaultGetFormData, action) => {
 			};
 		case DELETE_USER_INFO_SUCCESS:
 			return {
-				data: {}
+				data: null
 			};
 		default:
 			return state;

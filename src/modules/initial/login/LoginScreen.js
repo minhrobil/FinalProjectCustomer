@@ -27,7 +27,8 @@ class LoginScreen extends React.Component {
 		super(props);
 		this.state = {
 			username: '',
-			password: ''
+			password: '',
+			isOrder: this.props.navigation.state.params ? this.props.navigation.state.params.isOrder : false
 		};
 	}
 
@@ -159,6 +160,14 @@ class LoginScreen extends React.Component {
 							>
 								Không có tài khoản? Đăng ký ngay
 							</TextPoppin>
+							{this.state.isOrder && (
+								<TextPoppin
+									onPress={() => this.props.navigation.goBack()}
+									style={[ styles.title, { color: '#656565', textAlign: 'center', margin: 20 } ]}
+								>
+									Quay lại giỏ hàng
+								</TextPoppin>
+							)}
 						</View>
 					</ScrollView>
 				</KeyboardAwareScrollView>

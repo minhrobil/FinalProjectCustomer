@@ -4,13 +4,15 @@ import { Config } from '../../../Utilities/Config';
 import { Styles } from '../../../Utilities/Styles';
 
 const back_icon = require('../../../assets/images/back_icon.png');
+const user = require('../../../assets/images/user.png');
+
 const BORDER_COLOR = '#F3F3F3';
 import { TextRoboto, TextPoppin } from '../../../components/customize/MText';
 import OneLine from '../OneLine';
 import MShadowView from '../MShadowView';
 class HeaderCommon extends Component {
 	render() {
-		const { disableLeft, actionLeft, title } = this.props;
+		const { disableLeft, actionLeft, title, actionRight } = this.props;
 		return (
 			<View
 				style={{
@@ -20,7 +22,9 @@ class HeaderCommon extends Component {
 					zIndex: 1
 				}}
 			>
-				<View style={{ flex: 1, backgroundColor: 'white', marginBottom:Config.os==2 ? -32 : -20,  zIndex: 2 }} />
+				<View
+					style={{ flex: 1, backgroundColor: 'white', marginBottom: Config.os == 2 ? -32 : -20, zIndex: 2 }}
+				/>
 				<MShadowView style={styles.mview_submit}>
 					<View style={[ styles.view_header ]}>
 						{!disableLeft ? (
@@ -47,6 +51,31 @@ class HeaderCommon extends Component {
 						<View style={styles.view_right} />
 					</View>
 				</MShadowView>
+				{actionRight ? (
+					<TouchableOpacity
+						style={[
+							{
+								position: 'absolute',
+								zIndex: 3,
+								right: -40,
+								bottom: Config.os == 2 ? 30 : 35
+							}
+						]}
+						onPress={() => {
+							if (actionRight) {
+								actionRight();
+							}
+						}}
+					>
+						<Image
+							source={user}
+							style={{
+								height: 25,
+								resizeMode: 'contain'
+							}}
+						/>
+					</TouchableOpacity>
+				) : null}
 			</View>
 		);
 	}
@@ -85,8 +114,8 @@ const styles = StyleSheet.create({
 	},
 	view_right: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-		flex: 1
+		flex: 1,
+		backgroundColor: 'green',
+		justifyContent: 'space-between'
 	}
 });

@@ -22,6 +22,8 @@ import pencil from '../../assets/images/pencil.png';
 class Account extends React.Component {
 	constructor(props) {
 		super(props);
+		// MAsyncStorage.clearAll();
+		// this.props.deleteUserInfoAction();
 		this.state = {
 			account: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user : null
 		};
@@ -34,7 +36,7 @@ class Account extends React.Component {
 		console.log(this.props.userInfoReducer);
 		console.log('this.props.userInfoReducer');
 		if (this.props.userInfoReducer != PrevProps.userInfoReducer) {
-			this.setState({ account: this.props.userInfoReducer.data.user });
+			this.setState({ account: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user : null });
 		}
 	}
 
@@ -195,7 +197,8 @@ class Account extends React.Component {
 				this.props.navigation.dispatch(
 					StackActions.reset({
 						index: 0,
-						actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
+						// actions: [ NavigationActions.navigate({ routeName: 'LoginScreen' }) ]
+						actions: [ NavigationActions.navigate({ routeName: 'Product' }) ]
 					})
 				);
 			},
@@ -241,19 +244,11 @@ class Account extends React.Component {
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 									<View style={{ flex: 3 }}>{this.view_input_username()}</View>
 								</View>
-								{/* <TextPoppin style={styles.title}>Mật khẩu *</TextPoppin>
-							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_password()}</View>
-							</View>
-							<TextPoppin style={styles.title}>Nhập lại mật khẩu *</TextPoppin>
-							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
-								<View style={{ flex: 1 }}>{this.view_input_re_password()}</View>
-							</View> */}
 								<TextPoppin style={styles.title}>Địa chỉ</TextPoppin>
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 									<View style={{ flex: 3 }}>{this.view_input_address()}</View>
 								</View>
-								{this.state.account.email && (
+								{this.state.account.email && this.state.account.email !== '' ? (
 									<View>
 										<TextPoppin style={styles.title}>Email</TextPoppin>
 										<View
@@ -262,7 +257,7 @@ class Account extends React.Component {
 											<View style={{ flex: 3 }}>{this.view_input_email()}</View>
 										</View>
 									</View>
-								)}
+								) : null}
 								<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 									<TextPoppin
 										onPress={this.logout}
