@@ -16,7 +16,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Config } from '../../../Utilities/Config';
 import HeaderCommon from '../HeaderCommon';
 const ic_times = require('../../../assets/icons/ic_times.png');
-const mon_an = require('../../../assets/images/mon_an.png');
+const mon_an = require('../../../assets/images/mon_an.jpg');
 
 class ModalCart extends Component {
 	constructor(props) {

@@ -10,9 +10,7 @@
 		"lint": "eslint ."
 	},
 	"rnpm": {
-		"assets": [
-			"./src/assets/fonts/"
-		]
+		"assets": [ "./src/assets/fonts/" ]
 	},
 	"dependencies": {
 		"@react-native-community/async-storage": "1.6.3",

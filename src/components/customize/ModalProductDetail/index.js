@@ -17,7 +17,7 @@ import { Config } from '../../../Utilities/Config';
 import { setCartLocalAction, deleteCartLocalAction } from '../../../redux-saga/cartLocal';
 
 const ic_times = require('../../../assets/icons/ic_times.png');
-const mon_an = require('../../../assets/images/mon_an.png');
+const mon_an = require('../../../assets/images/mon_an.jpg');
 import { connect } from 'react-redux';
 
 class ModalProductDetail extends Component {

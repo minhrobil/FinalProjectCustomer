@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, TextInput, StyleSheet, FlatList } from 'react-native';
+import { View, TouchableOpacity, RefreshControl, TextInput, StyleSheet, FlatList } from 'react-native';
 import MView, { MView2 } from '../../components/customize/MView';
 import Image from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
@@ -28,7 +28,7 @@ import ModalCart from '../../components/customize/\bModalCart';
 import { height, width } from '../../components/customize/config/constant';
 const ic_times = require('../../assets/icons/ic_times.png');
 const ic_search = require('../../assets/icons/ic_search.png');
-const mon_an = require('../../assets/images/mon_an.png');
+const mon_an = require('../../assets/images/mon_an.jpg');
 
 class Product extends React.Component {
 	constructor(props) {
@@ -240,87 +240,86 @@ class Product extends React.Component {
 						) : null
 					}
 				/>
-				<KeyboardAwareScrollView
-					style={{ flex: 1 }}
-					contentContainerStyle={{ flex: 1 }}
-					keyboardShouldPersistTaps="handled"
-				>
-					{this._view_search()}
-					<View style={{ flex: 1, height: height, width: width }}>
-						<FlatList
-							initialNumToRender={10}
-							maxToRenderPerBatch={10}
-							windowSize={10}
-							legacyImplementation={false}
-							updateCellsBatchingPeriod={50}
-							refreshing={this.props.listProductReducer.isLoading}
-							onRefresh={this.onRefresh}
-							data={this.props.listProductReducer.data.list}
-							extraData={this.props.listProductReducer.data}
-							keyExtractor={(item, index) => index + ''}
-							ListEmptyComponent={
-								<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
-									Không có dữ liệu
-								</TextPoppin>
-							}
-							onScrollBeginDrag={() => {
-								this.setState({ scroll: true });
-							}}
-							onEndReachedThreshold={0.2}
-							onEndReached={({ distanceFromEnd }) => {
-								if (this.props.listProductReducer.canLoadMore) {
-									this.next_page();
-								}
-							}}
-							renderItem={({ item, index }) => {
-								return this.view_item(item, index);
-							}}
-						/>
-						{this.props.cartLocalReducer.data ? (
-							<TouchableOpacity
-								onPress={this.goCart}
-								style={{
-									position: 'absolute',
-									bottom: 10,
-									left: 10,
-									right: 10,
-									marginTop: 20,
-									justifyContent: 'center',
-									alignItems: 'center',
-									height: 50,
-									borderRadius: 5,
-									backgroundColor: Style.primaryColor,
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									paddingHorizontal: 15
-								}}
-							>
-								<TextPoppin style={[ styles.title, { color: 'white' } ]}>Xem giỏ hàng</TextPoppin>
-								<TextPoppin style={[ styles.title, { color: 'white' } ]}>
-									{this.count_total_quantity_cart(this.props.cartLocalReducer.data)}
-								</TextPoppin>
-								<TextPoppin style={[ styles.title, { color: 'white' } ]}>
-									{Utilities.instance().add_dot_number(
-										this.count_total_price_cart(this.props.cartLocalReducer.data)
-									)}
-								</TextPoppin>
-							</TouchableOpacity>
-						) : null}
-					</View>
-					<ModalProductDetail
-						action_on_hide={() => this.setState({ isHideModalProductDetail: true })}
-						action_on_show={() => this.setState({ isHideModalProductDetail: false })}
-						action_cancel={() => this.setState({ isVisibleModalProductDetail: false })}
-						isModalVisible={this.state.isVisibleModalProductDetail}
-						data={this.state.product}
-					/>
+				{this._view_search()}
 
-					<MAlert
-						ref={(ref) => {
-							this.alert = ref;
+				<View style={{ flex: 1, height: height, width: width }}>
+					<FlatList
+						refreshControl={
+							<RefreshControl
+								refreshing={this.props.listProductReducer.isLoading}
+								onRefresh={this.onRefresh}
+							/>
+						}
+						initialNumToRender={10}
+						maxToRenderPerBatch={10}
+						windowSize={10}
+						legacyImplementation={false}
+						updateCellsBatchingPeriod={50}
+						data={this.props.listProductReducer.data.list}
+						extraData={this.props.listProductReducer.data}
+						keyExtractor={(item, index) => index + ''}
+						ListEmptyComponent={
+							<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
+								Không có dữ liệu
+							</TextPoppin>
+						}
+						// onScrollBeginDrag={() => {
+						// 	this.setState({ scroll: true });
+						// }}
+						// onEndReachedThreshold={0.2}
+						// onEndReached={({ distanceFromEnd }) => {
+						// 	if (this.props.listProductReducer.canLoadMore) {
+						// 		this.next_page();
+						// 	}
+						// }}
+						renderItem={({ item, index }) => {
+							return this.view_item(item, index);
 						}}
 					/>
-				</KeyboardAwareScrollView>
+					{this.props.cartLocalReducer.data ? (
+						<TouchableOpacity
+							onPress={this.goCart}
+							style={{
+								position: 'absolute',
+								bottom: 10,
+								left: 10,
+								right: 10,
+								marginTop: 20,
+								justifyContent: 'center',
+								alignItems: 'center',
+								height: 50,
+								borderRadius: 5,
+								backgroundColor: Style.primaryColor,
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								paddingHorizontal: 15
+							}}
+						>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>Xem giỏ hàng</TextPoppin>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>
+								{this.count_total_quantity_cart(this.props.cartLocalReducer.data)}
+							</TextPoppin>
+							<TextPoppin style={[ styles.title, { color: 'white' } ]}>
+								{Utilities.instance().add_dot_number(
+									this.count_total_price_cart(this.props.cartLocalReducer.data)
+								)}
+							</TextPoppin>
+						</TouchableOpacity>
+					) : null}
+				</View>
+				<ModalProductDetail
+					action_on_hide={() => this.setState({ isHideModalProductDetail: true })}
+					action_on_show={() => this.setState({ isHideModalProductDetail: false })}
+					action_cancel={() => this.setState({ isVisibleModalProductDetail: false })}
+					isModalVisible={this.state.isVisibleModalProductDetail}
+					data={this.state.product}
+				/>
+
+				<MAlert
+					ref={(ref) => {
+						this.alert = ref;
+					}}
+				/>
 			</MView2>
 		);
 	};

@@ -1,4 +1,4 @@
-#Sun Nov 24 11:20:01 ICT 2019
+#Sun Nov 24 21:39:10 ICT 2019
 base.0=/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/transforms/dexMerger/debug/0
 path.1=classes2.dex
 renamed.1=classes2.dex

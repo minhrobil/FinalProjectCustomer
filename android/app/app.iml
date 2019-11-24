@@ -102,10 +102,8 @@
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp-urlconnection:3.12.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.12.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.15.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: org.jsoup:jsoup:1.12.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.multidex:multidex:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.react:react-native:0.61.2@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.devlight.shadowlayout:library:1.0.2@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.0.2@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-maps:17.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base:17.0.0@aar" level="project" />
@@ -146,21 +144,21 @@
     <orderEntry type="library" name="Gradle: com.facebook.fresco:nativeimagetranscoder:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.fresco:imagepipeline-okhttp3:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.webkit:android-jsc:r245459@aar" level="project" />
-    <orderEntry type="module" module-name="react-native-shadow-android" />
     <orderEntry type="module" module-name="react-native-sms" />
-    <orderEntry type="module" module-name="react-native-webview" />
-    <orderEntry type="module" module-name="react-native-maps" />
-    <orderEntry type="module" module-name="@react-native-community_async-storage" />
-    <orderEntry type="module" module-name="react-native-code-push" />
-    <orderEntry type="module" module-name="react-native-device-info" />
-    <orderEntry type="module" module-name="react-native-fast-image" />
-    <orderEntry type="module" module-name="react-native-gesture-handler" />
-    <orderEntry type="module" module-name="react-native-linear-gradient" />
-    <orderEntry type="module" module-name="react-native-network-info" />
-    <orderEntry type="module" module-name="react-native-permissions" />
-    <orderEntry type="module" module-name="react-native-reanimated" />
-    <orderEntry type="module" module-name="react-native-spinkit" />
-    <orderEntry type="module" module-name="react-native-svg" />
-    <orderEntry type="module" module-name="react-native-vector-icons" />
+    <orderEntry type="module" module-name="android-react-native-webview" />
+    <orderEntry type="module" module-name="android-react-native-maps" />
+    <orderEntry type="module" module-name="android-@react-native-community_async-storage" />
+    <orderEntry type="module" module-name="app-react-native-code-push" />
+    <orderEntry type="module" module-name="android-react-native-device-info" />
+    <orderEntry type="module" module-name="android-react-native-fast-image" />
+    <orderEntry type="module" module-name="android-react-native-gesture-handler" />
+    <orderEntry type="module" module-name="android-react-native-linear-gradient" />
+    <orderEntry type="module" module-name="android-react-native-network-info" />
+    <orderEntry type="module" module-name="android-react-native-permissions" />
+    <orderEntry type="module" module-name="android-react-native-reanimated" />
+    <orderEntry type="module" module-name="FinalProjectCustomer-node_modules-react-native-shadow-android" />
+    <orderEntry type="module" module-name="android-react-native-spinkit" />
+    <orderEntry type="module" module-name="android-react-native-svg" />
+    <orderEntry type="module" module-name="android-react-native-vector-icons" />
   </component>
 </module>

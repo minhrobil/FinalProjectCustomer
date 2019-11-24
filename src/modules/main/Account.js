@@ -82,7 +82,7 @@ class Account extends React.Component {
 					<TextInput
 						editable={false}
 						value={this.state.account.username}
-						placeholder="Nhập tài khoản"
+						placeholder="Nhập tên đăng nhập"
 						onChangeText={this.onChangeUsername}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
@@ -240,7 +240,7 @@ class Account extends React.Component {
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 									<View style={{ flex: 3 }}>{this.view_input_phone()}</View>
 								</View>
-								<TextPoppin style={styles.title}>Tài khoản</TextPoppin>
+								<TextPoppin style={styles.title}>Tên đăng nhập</TextPoppin>
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 									<View style={{ flex: 3 }}>{this.view_input_username()}</View>
 								</View>

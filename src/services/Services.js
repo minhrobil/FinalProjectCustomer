@@ -18,7 +18,6 @@ export const api = axios.create({
 api.interceptors.request.use(
 	async (config) => {
 		const user = await MAsyncStorage.getUserInfo();
-
 		if (user && user.token) {
 			config.headers.common['Authorization'] = 'Bearer ' + user.token;
 		}

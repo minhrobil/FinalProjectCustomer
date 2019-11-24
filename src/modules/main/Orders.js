@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, LayoutAnimation } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, RefreshControl, LayoutAnimation } from 'react-native';
 import MView from '../../components/customize/MView';
 import FastImage from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
@@ -10,7 +10,7 @@ import { Styles as Style } from '../../Utilities/Styles';
 import LinearGradient from 'react-native-linear-gradient';
 import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../components/customize/MAlert';
-import { login } from '../../redux-saga/Action';
+import { listOrderPendingAction } from '../../redux-saga/listOrderPending';
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../Utilities/MAsyncStorage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -21,6 +21,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import img_avatar_placeholder from '../../assets/images/img_avatar_placeholder.png';
 import right_icon from '../../assets/images/right_icon.png';
 import top_icon from '../../assets/images/top_icon.png';
+import Utilities from '../../Utilities/Utilities';
+import { height, width } from '../../components/customize/config/constant';
+const mon_an = require('../../assets/images/mon_an.jpg');
 
 class Item extends React.Component {
 	constructor(props) {
@@ -102,13 +105,52 @@ class Deliveries extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			tab: 1
+			tab: 1,
+			filter: {
+				sort: {
+					type: 'desc',
+					attr: ''
+				},
+				created_at: {
+					type: 'compare',
+					value: {
+						from: '',
+						to: ''
+					}
+				},
+				title: {
+					type: 'like',
+					value: ''
+				},
+				alias: {
+					type: '=',
+					value: []
+				},
+				search: '',
+				paging: {
+					perpage: 10,
+					page: 1
+				},
+				user_id: {
+					type: '=',
+					value: this.props.userInfoReducer.data.user.id
+				}
+			}
 		};
 	}
 	onChangeTab = (tab) => () => {
 		this.setState({
 			tab
 		});
+	};
+	componentDidMount() {
+		this.onRefresh();
+	}
+
+	componentDidUpdate(PrevProps) {}
+
+	onRefresh = () => {
+		this.props.listOrderPendingAction(this.state.filter);
 	};
 	view_tabbar = () => {
 		return (
@@ -142,23 +184,81 @@ class Deliveries extends React.Component {
 			</View>
 		);
 	};
+	openOrderDetail = (product) => () => {};
+	view_item = (item, index) => {
+		return (
+			<MShadowView style={{}}>
+				<TouchableOpacity
+					style={{
+						flexDirection: 'row',
+						paddingHorizontal: Config.PADDING_HORIZONTAL,
+						paddingVertical: Config.PADDING_VERTICAL
+					}}
+					onPress={this.openOrderDetail(item)}
+				>
+					<View style={{ flex: 1 }}>
+						<FastImage source={mon_an} style={{ height: 80 }} resizeMode="contain" />
+					</View>
+					<View style={{ flex: 1, paddingHorizontal: 10 }}>
+						<TextPoppin style={styles.title}>
+							{this.count_total_quantity_cart(item.products)} món
+						</TextPoppin>
+						<TextPoppin style={styles.title}>{item.customer_address}</TextPoppin>
+					</View>
+					<View style={{ flex: 1 }}>
+						<TextPoppin style={styles.text_price}>
+							{Utilities.instance().add_dot_number(item.total_price)}
+						</TextPoppin>
+					</View>
+				</TouchableOpacity>
+			</MShadowView>
+		);
+	};
+	count_total_quantity_cart = (cart) => {
+		var total = cart.reduce((sum, item) => sum + item.quantity, 0);
+		return total;
+	};
 	componentDidUpdate(PrevProps) {}
 	render() {
 		return (
 			<MView statusbarColor={'white'}>
 				<HeaderCommon disableLeft title="Đơn hàng của bạn" />
 				<View style={{ alignItems: 'center', flex: 1, width: '100%' }}>
-					{this.view_tabbar()}
-					<FlatList
-						ListFooterComponent={<View style={{ height: 20 }} />}
-						horizontal={false}
-						contentContainerStyle={{ width: Config.widthDevice }}
-						showsVerticalScrollIndicator={true}
-						data={[ 1, 2, 3, 4, 5 ]}
-						renderItem={({ item, index }) => {
-							return <Item key={item} item={item} navigation={this.props.navigation} />;
-						}}
-					/>
+					<View style={{ flex: 1, height: height, width: width }}>
+						<FlatList
+							refreshControl={
+								<RefreshControl
+									refreshing={this.props.listOrderPendingReducer.isLoading}
+									onRefresh={this.onRefresh}
+								/>
+							}
+							initialNumToRender={10}
+							maxToRenderPerBatch={10}
+							windowSize={10}
+							legacyImplementation={false}
+							updateCellsBatchingPeriod={50}
+							data={this.props.listOrderPendingReducer.data.list}
+							extraData={this.props.listOrderPendingReducer.data}
+							keyExtractor={(item, index) => index + ''}
+							ListEmptyComponent={
+								<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
+									Không có dữ liệu
+								</TextPoppin>
+							}
+							// onScrollBeginDrag={() => {
+							// 	this.setState({ scroll: true });
+							// }}
+							// onEndReachedThreshold={0.2}
+							// onEndReached={({ distanceFromEnd }) => {
+							// 	if (this.props.listOrderPendingReducer.canLoadMore) {
+							// 		this.next_page();
+							// 	}
+							// }}
+							renderItem={({ item, index }) => {
+								return this.view_item(item, index);
+							}}
+						/>
+					</View>
 				</View>
 				<MAlert
 					ref={(ref) => {
@@ -202,8 +302,9 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		loginRes: state.Login
+		userInfoReducer: state.userInfoReducer,
+		listOrderPendingReducer: state.listOrderPendingReducer
 	};
 }
 
-export default connect(mapStateToProps, { login })(Deliveries);
+export default connect(mapStateToProps, { listOrderPendingAction })(Deliveries);

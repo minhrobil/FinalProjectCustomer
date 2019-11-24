@@ -44,6 +44,8 @@ import { changePassSaga, CHANGE_PASS } from './changePass';
 import { listProductSaga, LIST_PRODUCT } from './listProduct';
 import { autocompleteAddressSaga, AUTOCOMPLETE_ADDRESS } from './autocompleteAddress';
 import { setCartLocalSaga, SET_CART_LOCAL, deleteCartLocalSaga, DELETE_CART_LOCAL } from './cartLocal';
+import { createOrderSaga, CREATE_ORDER } from './createOrder';
+import { listOrderPendingSaga, LIST_ORDER_PENDING } from './listOrderPending';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -193,23 +195,18 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(LIST_ORDER_PENDING, listOrderPendingSaga);
+
+	yield takeLatest(CREATE_ORDER, createOrderSaga);
 	yield takeLatest(DELETE_CART_LOCAL, deleteCartLocalSaga);
-
 	yield takeLatest(SET_CART_LOCAL, setCartLocalSaga);
-
 	yield takeLatest(AUTOCOMPLETE_ADDRESS, autocompleteAddressSaga);
-
 	yield takeLatest(LIST_PRODUCT, listProductSaga);
-
 	yield takeLatest(CHANGE_PASS, changePassSaga);
-
 	yield takeLatest(CHECK_TOKEN, checkTokenSaga);
-
 	yield takeLatest(UPDATE_ACCOUNT, updateAccountSaga);
-
 	yield takeLatest(SET_USER_INFO, setUserInfoSaga);
 	yield takeLatest(DELETE_USER_INFO, deleteUserInfoSaga);
-
 	yield takeLatest(SIGNUP, signupSaga);
 	yield takeLatest(PAY_DEBIT_MONEY, payDebitMoneySaga);
 	yield takeLatest(ACTION_CLOSE_LOAN, actionCloseLoanSaga);

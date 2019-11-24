@@ -12,7 +12,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import { NavigationActions, StackActions } from 'react-navigation';
 import MAlert from '../../components/customize/MAlert';
 import { login } from '../../redux-saga/Action';
-import { setUserInfoAction } from '../../redux-saga/userInfo';
 
 import { connect } from 'react-redux';
 import MAsyncStorage from '../../Utilities/MAsyncStorage';
@@ -25,6 +24,9 @@ import Utilities from '../../Utilities/Utilities';
 import OneLine, { OneLineMedium } from '../../components/customize/OneLine';
 import { width, height } from '../../components/customize/config/constant';
 import { setCartLocalAction, deleteCartLocalAction } from '../../redux-saga/cartLocal';
+import { createOrderAction } from '../../redux-saga/createOrder';
+import { setUserInfoAction } from '../../redux-saga/userInfo';
+import { checkTokenAction } from '../../redux-saga/checkToken';
 import ModalProductDetail from '../../components/customize/ModalProductDetail';
 import pencil from '../../assets/images/pencil.png';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -38,10 +40,13 @@ class Cart extends React.Component {
 			isVisibleModalProductDetail: false,
 			customer_name: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user.name : '',
 			customer_phone: this.props.userInfoReducer.data ? this.props.userInfoReducer.data.user.phone : '',
-			customer_address:
-				this.props.userInfoReducer.data && this.props.userInfoReducer.data.user.address
-					? this.props.userInfoReducer.data.user.address
-					: ''
+			// customer_address:
+			// 	this.props.userInfoReducer.data && this.props.userInfoReducer.data.user.address
+			// 		? this.props.userInfoReducer.data.user.address
+			// 		: ''
+			customer_address: '',
+			customer_latitude: 0,
+			customer_longitude: 0
 		};
 	}
 	componentDidUpdate(PrevProps) {
@@ -49,11 +54,26 @@ class Cart extends React.Component {
 			if (this.props.userInfoReducer.data) {
 				this.setState({
 					customer_name: this.props.userInfoReducer.data.user.name,
-					customer_phone: this.props.userInfoReducer.data.user.phone,
-					customer_address: this.props.userInfoReducer.data.user.address
-						? this.props.userInfoReducer.data.user.address
-						: ''
+					customer_phone: this.props.userInfoReducer.data.user.phone
+					// customer_address: this.props.userInfoReducer.data.user.address
+					// 	? this.props.userInfoReducer.data.user.address
+					// 	: ''
 				});
+			}
+		}
+		if (PrevProps.createOrderReducer != this.props.createOrderReducer) {
+			if (this.props.createOrderReducer.isSuccess) {
+				this.props.deleteCartLocalAction();
+				this.props.checkTokenAction();
+				this.props.navigation.goBack();
+				this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Orders' }));
+			} else {
+				this.alert.showAlert(this.props.createOrderReducer.message, () => {});
+			}
+		}
+		if (this.props.checkTokenReducer != PrevProps.checkTokenReducer) {
+			if (this.props.checkTokenReducer.isSuccess) {
+				this.props.setUserInfoAction(this.props.checkTokenReducer.data);
 			}
 		}
 	}
@@ -115,6 +135,24 @@ class Cart extends React.Component {
 	}
 	_submit = () => {
 		if (this.props.userInfoReducer.data) {
+			if (this.state.customer_name == '') {
+				this.alert.showAlert(`Tên người nhận không được để trống`, () => {});
+			} else if (this.state.customer_address == '') {
+				this.alert.showAlert(`Địa chỉ người nhận không được để trống`, () => {});
+			} else if (this.state.customer_phone == '') {
+				this.alert.showAlert(`Số điện thoại người nhận không được để trống`, () => {});
+			} else {
+				var data = {
+					customer_name: this.state.customer_name,
+					customer_phone: this.state.customer_phone,
+					customer_address: this.state.customer_address,
+					customer_latitude: this.state.customer_latitude,
+					customer_longitude: this.state.customer_longitude,
+					products: JSON.stringify(this.props.cartLocalReducer.data)
+				};
+				console.log(data);
+				this.props.createOrderAction(data);
+			}
 		} else {
 			this.alert.showAlert(
 				`Bạn cần đăng nhập để đặt hàng`,
@@ -224,24 +262,25 @@ class Cart extends React.Component {
 								</View>
 							))
 						) : null}
-
-						<View
-							style={{
-								flexDirection: 'row',
-								padding: 10,
-								backgroundColor: 'white',
-								alignItems: 'center'
-							}}
-						>
-							<View style={{ flex: 1, paddingHorizontal: 10 }}>
-								<TextPoppin style={[ styles.title, {} ]}>Tổng giá trị đơn hàng</TextPoppin>
+						{this.props.cartLocalReducer.data ? (
+							<View
+								style={{
+									flexDirection: 'row',
+									padding: 10,
+									backgroundColor: 'white',
+									alignItems: 'center'
+								}}
+							>
+								<View style={{ flex: 1, paddingHorizontal: 10 }}>
+									<TextPoppin style={[ styles.title, {} ]}>Tổng giá trị đơn hàng</TextPoppin>
+								</View>
+								<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
+									{Utilities.instance().add_dot_number(
+										this.count_total_price_cart(this.props.cartLocalReducer.data)
+									)}
+								</TextPoppin>
 							</View>
-							<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-								{Utilities.instance().add_dot_number(
-									this.count_total_price_cart(this.props.cartLocalReducer.data)
-								)}
-							</TextPoppin>
-						</View>
+						) : null}
 						<OneLineMedium />
 						{this.props.userInfoReducer.data && (
 							<View style={{ padding: Config.PADDING_HORIZONTAL, backgroundColor: 'white' }}>
@@ -326,11 +365,19 @@ class Cart extends React.Component {
 function mapStateToProps(state) {
 	return {
 		userInfoReducer: state.userInfoReducer,
-		cartLocalReducer: state.cartLocalReducer
+		cartLocalReducer: state.cartLocalReducer,
+		createOrderReducer: state.createOrderReducer,
+		checkTokenReducer: state.checkTokenReducer
 	};
 }
 
-export default connect(mapStateToProps, { setCartLocalAction, deleteCartLocalAction })(Cart);
+export default connect(mapStateToProps, {
+	setCartLocalAction,
+	deleteCartLocalAction,
+	createOrderAction,
+	setUserInfoAction,
+	checkTokenAction
+})(Cart);
 
 const styles = StyleSheet.create({
 	mview_submit: { borderRadius: 40 },

@@ -37,7 +37,7 @@ class LoginScreen extends React.Component {
 			this.props.login(this.state.username, this.state.password);
 		} else {
 			if (this.state.username == '') {
-				this.alert.showAlert(`Bạn phải nhập tài khoản`, () => {});
+				this.alert.showAlert(`Bạn phải nhập tên đăng nhập`, () => {});
 			} else if (this.state.password == '') {
 				this.alert.showAlert(`Bạn phải nhập mật khẩu`, () => {});
 			}
@@ -82,7 +82,7 @@ class LoginScreen extends React.Component {
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<TextInput
 						value={this.state.username}
-						placeholder="Nhập tài khoản"
+						placeholder="Nhập tên đăng nhập"
 						onChangeText={this.onChangeUsername}
 						style={[ styles.text_input, { flex: 3 } ]}
 					/>
@@ -145,7 +145,7 @@ class LoginScreen extends React.Component {
 						</View>
 						{/* <View style={{ height: Config.heightDevice * 0.1 }} /> */}
 						<View style={{ flex: 1, padding: Config.PADDING_HORIZONTAL }}>
-							<TextPoppin style={styles.title}>Tài khoản</TextPoppin>
+							<TextPoppin style={styles.title}>Tên đăng nhập</TextPoppin>
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 								<View style={{ flex: 3 }}>{this.view_input_username()}</View>
 							</View>

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/tima/Documents/QuangMinh/thoxaydung61/android/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-mr/values-mr.xml",
+            "outputFile": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-mr/values-mr.xml",
             "map": [
                 {
                     "source": "/Users/tima/.gradle/caches/transforms-2/files-2.1/d7ad4afd74aaaf371e60c032a73a4313/res/values-mr/values.xml",

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/tima/Documents/QuangMinh/thoxaydung61/android/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-gl/values-gl.xml",
+            "outputFile": "/Users/tima/Documents/QuangMinh/FinalProjectCustomer/android/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-gl/values-gl.xml",
             "map": [
                 {
                     "source": "/Users/tima/.gradle/caches/transforms-2/files-2.1/7a92f32ef9b3b6f13fe401e6c7d88872/res/values-gl/values-gl.xml",

@@ -30,7 +30,7 @@ import { height, width } from '../../components/customize/config/constant';
 import OneLine from '../../components/customize/OneLine';
 const ic_times = require('../../assets/icons/ic_times.png');
 const ic_search = require('../../assets/icons/ic_search.png');
-const mon_an = require('../../assets/images/mon_an.png');
+const mon_an = require('../../assets/images/mon_an.jpg');
 
 class AutocompleteAddress extends React.Component {
 	constructor(props) {
@@ -84,6 +84,7 @@ class AutocompleteAddress extends React.Component {
 					<Image source={ic_search} style={{ height: 18, width: 40 }} resizeMode="contain" />
 					<View style={{ flex: 1 }}>
 						<TextInput
+							autoFocus
 							placeholder={'Tìm kiếm địa chỉ'}
 							style={[
 								{
@@ -128,7 +129,7 @@ class AutocompleteAddress extends React.Component {
 	}
 	view_item = (item, index) => {
 		return (
-			<MShadowView style={{}} key={index}>
+			<MShadowView style={{}} key={index + ' -'}>
 				<TouchableOpacity
 					style={{
 						flexDirection: 'row',

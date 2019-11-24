@@ -42,6 +42,8 @@ import { changePassReducer } from './changePass';
 import { listProductReducer } from './listProduct';
 import { autocompleteAddressReducer } from './autocompleteAddress';
 import { cartLocalReducer } from './cartLocal';
+import { createOrderReducer } from './createOrder';
+import { listOrderPendingReducer } from './listOrderPending';
 
 const defaultGetFormData = {
 	isLoading: false,
@@ -246,6 +248,8 @@ const GetContracts = (state = defaultGetFormData, action) => {
 };
 
 const reducer = combineReducers({
+	listOrderPendingReducer,
+	createOrderReducer,
 	cartLocalReducer,
 	autocompleteAddressReducer,
 	listProductReducer,
