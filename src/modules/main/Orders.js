@@ -377,7 +377,7 @@ class Deliveries extends React.Component {
 							extraData={this.props.listOrderPendingReducer.data.list}
 							keyExtractor={(item, index) => index + ''}
 							ListEmptyComponent={
-								<TextPoppin style={[ styles.text_content, { marginTop: 100, textAlign: 'center' } ]}>
+								<TextPoppin style={[ styles.text_content, { marginTop: 101, textAlign: 'center' } ]}>
 									Không có dữ liệu
 								</TextPoppin>
 							}
