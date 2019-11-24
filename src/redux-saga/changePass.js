@@ -56,7 +56,6 @@ export function* changePassSaga(action) {
 		console.log('changePassSaga', response);
 		if (response.status === 200) {
 			if (response.data.status === 'success') {
-				yield MAsyncStorage.setUserInfo(response.data.data);
 				yield put({ type: CHANGE_PASS_SUCCESS, data: response.data.data, message: response.data.msg });
 			} else {
 				yield put({

@@ -42,6 +42,7 @@ import { UPDATE_ACCOUNT, updateAccountSaga } from './updateAccount';
 import { checkTokenSaga, CHECK_TOKEN } from './checkToken';
 import { changePassSaga, CHANGE_PASS } from './changePass';
 import { listProductSaga, LIST_PRODUCT } from './listProduct';
+import { autocompleteAddressSaga, AUTOCOMPLETE_ADDRESS } from './autocompleteAddress';
 function* getFormData(action) {
 	try {
 		const response = yield Services.getFormData(action.params);
@@ -191,6 +192,8 @@ function* watchGetDebtReminder() {
 }
 
 function* watchAll() {
+	yield takeLatest(AUTOCOMPLETE_ADDRESS, autocompleteAddressSaga);
+
 	yield takeLatest(LIST_PRODUCT, listProductSaga);
 
 	yield takeLatest(CHANGE_PASS, changePassSaga);

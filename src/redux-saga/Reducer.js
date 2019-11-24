@@ -40,6 +40,7 @@ import { updateAccountReducer } from './updateAccount';
 import { checkTokenReducer } from './checkToken';
 import { changePassReducer } from './changePass';
 import { listProductReducer } from './listProduct';
+import { autocompleteAddressReducer } from './autocompleteAddress';
 
 const defaultGetFormData = {
 	isLoading: false,
@@ -244,6 +245,7 @@ const GetContracts = (state = defaultGetFormData, action) => {
 };
 
 const reducer = combineReducers({
+	autocompleteAddressReducer,
 	listProductReducer,
 	changePassReducer,
 	checkTokenReducer,

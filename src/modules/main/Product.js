@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, TextInput, StyleSheet, FlatList } from 'react-native';
-import MView from '../../components/customize/MView';
+import MView, { MView2 } from '../../components/customize/MView';
 import Image from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
 import { TextPoppin } from '../../components/customize/MText';
@@ -178,7 +178,7 @@ class Product extends React.Component {
 	};
 	render = () => {
 		return (
-			<MView statusbarColor={'white'}>
+			<MView2 statusbarColor={'white'}>
 				<HeaderCommon title="Sản phẩm đang bán" disableLeft actionLeft={this.props.navigation.goBack} />
 				<KeyboardAwareScrollView
 					style={{ flex: 1 }}
@@ -253,7 +253,7 @@ class Product extends React.Component {
 						}}
 					/>
 				</KeyboardAwareScrollView>
-			</MView>
+			</MView2>
 		);
 	};
 }

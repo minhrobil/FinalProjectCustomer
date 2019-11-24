@@ -48,7 +48,7 @@ export const listProductReducer = (state = defaultGetFormData, action) => {
 				isLoading: true
 			};
 		default:
-			return defaultGetFormData;
+			return state;
 	}
 };
 export function* listProductService(filter) {
@@ -65,7 +65,6 @@ export function* listProductSaga(action) {
 		console.log('listProductSaga', response);
 		if (response.status === 200) {
 			if (response.data.status === 'success') {
-				yield MAsyncStorage.setUserInfo(response.data.data);
 				yield put({ type: LIST_PRODUCT_SUCCESS, data: response.data.data, message: response.data.msg });
 			} else {
 				yield put({

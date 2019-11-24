@@ -13,6 +13,7 @@ import AccountEdit from './modules/main/AccountEdit';
 import ChangePass from './modules/main/ChangePass';
 import Product from './modules/main/Product';
 import Cart from './modules/main/Cart';
+import AutocompleteAddress from './modules/main/AutocompleteAddress';
 
 import SMSValidation from './modules/initial/login/SMSValidation';
 import SigninScreen from './modules/initial/login/SigninScreen';
@@ -106,6 +107,9 @@ const routeStack = createStackNavigator(
 		},
 		Cart: {
 			screen: Cart
+		},
+		AutocompleteAddress: {
+			screen: AutocompleteAddress
 		}
 	},
 	{

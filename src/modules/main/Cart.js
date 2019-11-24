@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native';
-import MView from '../../components/customize/MView';
+import MView, { MView2 } from '../../components/customize/MView';
 import FastImage from 'react-native-fast-image';
 import { Config } from '../../Utilities/Config';
 import { TextPoppin } from '../../components/customize/MText';
@@ -23,6 +23,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import HeaderCommon from '../../components/customize/HeaderCommon';
 import Utilities from '../../Utilities/Utilities';
 import OneLine, { OneLineMedium } from '../../components/customize/OneLine';
+import { width, height } from '../../components/customize/config/constant';
 
 class Cart extends React.Component {
 	constructor(props) {
@@ -58,8 +59,13 @@ class Cart extends React.Component {
 			<MShadowView style={styles.view_search}>
 				<View style={{ paddingHorizontal: 10, flexDirection: 'row' }}>
 					<View style={[ styles.text_input, { flex: 3, justifyContent: 'center' } ]}>
-						<TextPoppin style={[ styles.text_content, { color: '#C7C7CD' } ]}>
-							Nhập địa chỉ nhận hàng
+						<TextPoppin
+							style={[
+								styles.text_content,
+								{ color: this.state.customer_address == '' ? '#C7C7CD' : '#656565' }
+							]}
+						>
+							{this.state.customer_address == '' ? 'Nhập địa chỉ nhận hàng' : this.state.customer_address}
 						</TextPoppin>
 					</View>
 				</View>
@@ -78,12 +84,21 @@ class Cart extends React.Component {
 		}
 	};
 	goAutocompleteAddress = () => {
-		this.props.navigation.navigate('AutocompleteAddress');
+		this.props.navigation.navigate('AutocompleteAddress', {
+			address: this.state.customer_address,
+			action: (data) => {
+				this.setState({
+					customer_latitude: data.lat,
+					customer_longitude: data.lng,
+					customer_address: data.address
+				});
+			}
+		});
 	};
 
 	render() {
 		return (
-			<MView statusbarColor={'white'}>
+			<MView2 statusbarColor={'white'}>
 				<HeaderCommon
 					title="Giỏ hàng của bạn"
 					actionLeft={() => {
@@ -94,7 +109,7 @@ class Cart extends React.Component {
 					<ScrollView
 						keyboardShouldPersistTaps="handled"
 						style={{ flex: 1 }}
-						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL }}
+						contentContainerStyle={{ paddingHorizontal: Config.PADDING_HORIZONTAL, flex: 1 }}
 					>
 						<View
 							style={{
@@ -193,7 +208,7 @@ class Cart extends React.Component {
 							<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
 								<View style={{ flex: 3 }}>{this.view_input_customer_name()}</View>
 							</View>
-							<TouchableOpacity>
+							<TouchableOpacity onPress={this.goAutocompleteAddress}>
 								<TextPoppin style={[ styles.title, { marginTop: 10 } ]}>Địa chỉ nhận hàng *</TextPoppin>
 
 								<View style={{ flexDirection: 'row', marginHorizontal: Config.os == 2 ? -5 : -6 }}>
@@ -203,48 +218,45 @@ class Cart extends React.Component {
 						</View>
 						<OneLineMedium height={150} />
 					</ScrollView>
+				</KeyboardAwareScrollView>
+				<View
+					style={{
+						width: '100%',
+						backgroundColor: 'white',
+						padding: 10
+					}}
+				>
 					<View
 						style={{
-							position: 'absolute',
-							bottom: 0,
-							left: 0,
-							right: 0,
-							backgroundColor: 'white',
-							padding: 10
+							flexDirection: 'row',
+							alignItems: 'center'
 						}}
 					>
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center'
-							}}
-						>
-							<View style={{ flex: 1, marginBottom: 10 }}>
-								<TextPoppin style={[ styles.title, {} ]}>Tổng cộng</TextPoppin>
-							</View>
-							<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
-								{Utilities.instance().add_dot_number(100000)}
-							</TextPoppin>
+						<View style={{ flex: 1, marginBottom: 10 }}>
+							<TextPoppin style={[ styles.title, {} ]}>Tổng cộng</TextPoppin>
 						</View>
-						<TouchableOpacity
-							style={{
-								justifyContent: 'center',
-								alignItems: 'center',
-								height: 50,
-								borderRadius: 5,
-								backgroundColor: Styles.primaryColor
-							}}
-						>
-							<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
-						</TouchableOpacity>
+						<TextPoppin style={[ styles.title, { fontSize: 17, textAlign: 'right' } ]}>
+							{Utilities.instance().add_dot_number(100000)}
+						</TextPoppin>
 					</View>
-				</KeyboardAwareScrollView>
+					<TouchableOpacity
+						style={{
+							justifyContent: 'center',
+							alignItems: 'center',
+							height: 50,
+							borderRadius: 5,
+							backgroundColor: Styles.primaryColor
+						}}
+					>
+						<TextPoppin style={[ styles.title, { color: 'white' } ]}>Đặt đơn hàng</TextPoppin>
+					</TouchableOpacity>
+				</View>
 				<MAlert
 					ref={(ref) => {
 						this.alert = ref;
 					}}
 				/>
-			</MView>
+			</MView2>
 		);
 	}
 }
